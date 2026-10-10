@@ -67,7 +67,7 @@ export function LoginForms() {
 
 export function MemberHome() {
   const [code, setCode] = useState("");
-  const [draft, setDraft] = useState({ name: "", neighborhood: "", purpose: "building" });
+  const [draft, setDraft] = useState({ name: "", neighborhood: "" });
   const [review, setReview] = useState<ActionResult["review"] | null>(null);
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
@@ -84,7 +84,7 @@ export function MemberHome() {
   async function create(anyway: boolean) {
     setPending(true);
     setMessage("");
-    const result = await createGroupAction({ ...draft, anyway });
+    const result = await createGroupAction({ ...draft, purpose: "other", anyway });
     setPending(false);
     if (!result.ok) {
       setReview(result.review ?? null);
@@ -109,13 +109,6 @@ export function MemberHome() {
         <label className="field" htmlFor="neighborhood">Neighborhood name</label>
         <input id="neighborhood" type="text" value={draft.neighborhood} onChange={(event) => setDraft({ ...draft, neighborhood: event.target.value })} required />
         <p className="hint">A neighborhood name, not a street address.</p>
-        <label className="field" htmlFor="purpose">Purpose</label>
-        <select id="purpose" value={draft.purpose} onChange={(event) => setDraft({ ...draft, purpose: event.target.value })}>
-          <option value="building">Building</option>
-          <option value="school">School</option>
-          <option value="street">Street</option>
-          <option value="other">Other</option>
-        </select>
         <div className="row">
           <button className="btn brand" disabled={pending}>Create group</button>
           {review?.allowCreateAnyway && (

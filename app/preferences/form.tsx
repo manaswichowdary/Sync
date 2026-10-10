@@ -38,7 +38,7 @@ export function PreferenceForm({
         <div className="checks">
           <label><input type="checkbox" checked={help} onChange={(event) => setHelp(event.target.checked)} /> Help</label>
           <label><input type="checkbox" checked={gather} onChange={(event) => setGather(event.target.checked)} /> Gather</label>
-          <label><input type="checkbox" checked={updates} onChange={(event) => setUpdates(event.target.checked)} /> Updates</label>
+          <label><input type="checkbox" checked={updates} onChange={(event) => setUpdates(event.target.checked)} /> Discussion Forum</label>
         </div>
         <p className="meta">Muting a thread never hides safety notes for an exchange you are part of.</p>
         <div className="row">
