@@ -15,25 +15,32 @@ export function ForecastPanel({ data }: { data: GroupPageData }) {
       setMessage(result.error ?? "Could not send that.");
       return;
     }
-    setMessage("");
+    setMessage(result.message ?? "Request sent.");
     router.refresh();
   }
 
   return (
-    <section className="card">
-      <h2>Calendar</h2>
-      <p>{data.calendarNote}</p>
-      {data.forecast.length === 0 && <p>No pickup conflict in the next 7 days of the sample calendar.</p>}
-      {data.forecast.map((item) => (
-        <div key={item.summary}>
-          <p>{item.summary}</p>
-          <p className="hint">{item.busyLabel} overlaps {item.pickupLabel}.</p>
-          <button className="btn brand" type="button" onClick={() => send(item.summary)}>
-            Send request
-          </button>
+    <div className="grid">
+      <div className="tab-head">
+        <div>
+          <h2>Calendar</h2>
+          <p>{data.calendarNote}</p>
         </div>
+      </div>
+      {data.forecast.length === 0 && (
+        <section className="card empty-card">
+          <p className="empty-mark" aria-hidden="true">⏰</p>
+          <p>No busy time in the next 7 days.</p>
+        </section>
+      )}
+      {data.forecast.map((item) => (
+        <article key={item.summary} className="card">
+          <h2>{item.summary}</h2>
+          <p className="hint">{item.busyLabel} overlaps {item.pickupLabel}.</p>
+          <button className="btn brand" type="button" onClick={() => send(item.summary)}>Send request</button>
+        </article>
       ))}
       {message && <div className="notice">{message}</div>}
-    </section>
+    </div>
   );
 }

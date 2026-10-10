@@ -12,8 +12,16 @@ const TOPICS = [
   { id: "heads_up", label: "Heads up" },
 ];
 
+function daysLeft(iso: string | null) {
+  if (!iso) return null;
+  const ms = new Date(iso).getTime() - Date.now();
+  const days = Math.max(0, Math.ceil(ms / 86400000));
+  return days === 1 ? "Expires in 1 day" : `Expires in ${days} days`;
+}
+
 export function UpdatesPanel({ groupId, posts }: { groupId: string; posts: PostView[] }) {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
   const [topic, setTopic] = useState("heads_up");
   const [text, setText] = useState("");
   const [replies, setReplies] = useState<Record<string, string>>({});
@@ -29,28 +37,55 @@ export function UpdatesPanel({ groupId, posts }: { groupId: string; posts: PostV
     }
     setText("");
     setMessage("");
+    setOpen(false);
     router.refresh();
   }
 
   return (
     <div className="grid">
-      <form className="card" onSubmit={publish}>
-        <h2>Share an update</h2>
-        <label className="field" htmlFor="topic">Kind</label>
-        <select id="topic" value={topic} onChange={(event) => setTopic(event.target.value)}>
-          {TOPICS.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}
-        </select>
-        <label className="field" htmlFor="update-text">Update</label>
-        <textarea id="update-text" value={text} onChange={(event) => setText(event.target.value)} />
-        <div className="row">
-          <button className="btn brand">Post</button>
+      <div className="tab-head">
+        <div>
+          <h2>Discussion Forum</h2>
+          <p>Share a short note with the group.</p>
         </div>
-        {message && <div className="notice">{message}</div>}
-      </form>
+        <button className="btn" type="button" onClick={() => setOpen((value) => !value)}>New post</button>
+      </div>
+      {open && (
+        <form className="card composer" onSubmit={publish}>
+          <h2>Share a note</h2>
+          <div className="chip-row" role="group" aria-label="Post type">
+            {TOPICS.map((item) => (
+              <button
+                key={item.id}
+                className={topic === item.id ? "tab-pill on" : "tab-pill"}
+                type="button"
+                onClick={() => setTopic(item.id)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+          <label className="field" htmlFor="update-text">Note</label>
+          <textarea id="update-text" value={text} onChange={(event) => setText(event.target.value)} />
+          <div className="row">
+            <button className="btn brand">Post</button>
+          </div>
+          {message && <div className="notice">{message}</div>}
+        </form>
+      )}
+      {posts.length === 0 && (
+        <section className="card empty-card">
+          <p className="empty-mark" aria-hidden="true">📝</p>
+          <p>No notes yet.</p>
+        </section>
+      )}
       {posts.map((post) => (
         <article key={post.id} className="card">
           {post.held && <p className="meta">This is on hold.</p>}
-          <p className="meta">{TOPICS.find((item) => item.id === post.topic)?.label ?? "Update"}{post.expiresAt ? ` · until ${new Date(post.expiresAt).toLocaleDateString()}` : ""}</p>
+          <p className="meta">
+            {TOPICS.find((item) => item.id === post.topic)?.label ?? "Note"}
+            {post.expiresAt ? ` · ${daysLeft(post.expiresAt)}` : ""}
+          </p>
           <p>{post.text}</p>
           <p className="meta">{post.authorName}</p>
           {post.replies.map((reply) => (
@@ -78,6 +113,7 @@ export function UpdatesPanel({ groupId, posts }: { groupId: string; posts: PostV
           <ThreadActions groupId={groupId} postId={post.id} />
         </article>
       ))}
+      {message && !open && <div className="notice">{message}</div>}
     </div>
   );
 }
