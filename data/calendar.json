@@ -1,19 +1,12 @@
 {
   "note": "Sample calendar only. Real Google and Outlook calendars come later.",
   "busy": [
-    {
-      "weekday": "thursday",
-      "start": "15:00",
-      "end": "16:30",
-      "label": "Team meeting"
-    }
+    { "weekday": "thursday", "start": "15:30", "end": "16:30", "label": "Team meeting" },
+    { "weekday": "tuesday", "start": "16:00", "end": "17:00", "label": "Tuesday 4:00" },
+    { "weekday": "friday", "start": "17:30", "end": "18:30", "label": "Friday 5:30" }
   ],
   "pickups": [
-    {
-      "weekday": "thursday",
-      "time": "15:30",
-      "label": "School pickup"
-    }
+    { "weekday": "thursday", "time": "15:30", "label": "Thursday pickup" }
   ],
   "sampleOffers": [
     {
@@ -21,7 +14,7 @@
       "weekday": "thursday",
       "start": "15:00",
       "end": "17:00",
-      "note": "Free after the school day"
+      "note": "Free Thursday afternoon"
     }
   ]
 }

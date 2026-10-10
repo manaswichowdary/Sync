@@ -150,8 +150,9 @@ async function insertCode(db: Db, groupId: string, userId: string, maxUses: numb
       uses: 0,
       expires_at: expiresAt,
     });
-    if (!error) return;
+    if (!error) return code;
   }
+  return null;
 }
 
 export async function createInvite(
@@ -163,8 +164,9 @@ export async function createInvite(
   if (blocked) return blocked;
   const maxUses = clampCodeMaxUses(input.maxUses);
   const days = clampCodeDays(input.days);
-  await insertCode(db, input.groupId, user.id, maxUses, codeExpiresAt(new Date(), days).toISOString());
-  return { ok: true, message: "New code ready." };
+  const code = await insertCode(db, input.groupId, user.id, maxUses, codeExpiresAt(new Date(), days).toISOString());
+  if (!code) return { ok: false, error: "Could not make a code." };
+  return { ok: true, message: `New code ready. ${code}` };
 }
 
 async function savePost(
