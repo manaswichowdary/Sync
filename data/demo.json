@@ -1,0 +1,96 @@
+{
+  "viewer": { "firstName": "Demo Parent", "area": "Tempe, AZ" },
+  "posts": [
+    {
+      "id": "g1", "board": "gather",
+      "text": "Looking for a playdate for my 7 year old, Saturday morning at a public park. He loves building with blocks.",
+      "authorFirstName": "Priya", "area": "Hudson neighborhood", "lat": 33.4255, "lng": -111.9300,
+      "distanceMiles": 0.3, "kidsAges": [7], "times": ["sat-am"], "publicOnly": true,
+      "trust": "invited", "metCount": 3, "invitedBy": "Maria"
+    },
+    {
+      "id": "g2", "board": "gather",
+      "text": "Hosting a small potluck on the porch Sunday afternoon. Kids welcome, bring a snack to share.",
+      "authorFirstName": "Marcus", "area": "Papago Park area", "lat": 33.4470, "lng": -111.9500,
+      "distanceMiles": 0.6, "kidsAges": [5, 8], "times": ["sun-pm"], "publicOnly": false,
+      "trust": "met", "metCount": 6
+    },
+    {
+      "id": "g3", "board": "gather",
+      "text": "Two kids, ages 5 and 6, looking for a weekday afternoon playdate at the library or a park.",
+      "authorFirstName": "Dana", "area": "Mill Ave area", "lat": 33.4210, "lng": -111.9380,
+      "distanceMiles": 0.8, "kidsAges": [5, 6], "times": ["weekday-pm", "sat-pm"], "publicOnly": true,
+      "trust": "new", "metCount": 0
+    },
+    {
+      "id": "g4", "board": "gather",
+      "text": "Our 6 year old would love a Saturday morning meetup. We prefer a public place and a short first visit.",
+      "authorFirstName": "Jordan", "area": "Hudson neighborhood", "lat": 33.4290, "lng": -111.9340,
+      "distanceMiles": 0.5, "kidsAges": [6], "times": ["sat-am"], "publicOnly": true,
+      "trust": "invited", "metCount": 1, "invitedBy": "Priya"
+    },
+    {
+      "id": "h1", "board": "help",
+      "text": "Need a ride to the pediatrician Thursday morning for my toddler. Happy to share gas money in kind, like a meal.",
+      "authorFirstName": "Alicia", "area": "Gammage area", "lat": 33.4180, "lng": -111.9260,
+      "distanceMiles": 0.7, "kidsAges": [2], "times": ["weekday-am"], "publicOnly": true,
+      "trust": "new", "metCount": 0
+    },
+    {
+      "id": "h2", "board": "help",
+      "text": "Can anyone check in on my older neighbor this week? She lives alone and would enjoy a short visit.",
+      "authorFirstName": "Sam", "area": "Hudson neighborhood", "lat": 33.4240, "lng": -111.9320,
+      "distanceMiles": 0.4, "kidsAges": [], "times": ["weekday-pm"], "publicOnly": true,
+      "trust": "met", "metCount": 4
+    },
+    {
+      "id": "h3", "board": "help",
+      "text": "Looking for a short after school pickup swap on Tuesdays and Thursdays for two kids.",
+      "authorFirstName": "Chen", "area": "Mill Ave area", "lat": 33.4220, "lng": -111.9400,
+      "distanceMiles": 0.9, "kidsAges": [8, 10], "times": ["weekday-pm"], "publicOnly": true,
+      "trust": "invited", "metCount": 2, "invitedBy": "Dana"
+    },
+    {
+      "id": "s1", "board": "share",
+      "text": "Lending a double stroller and a folding crib. Pickup from the porch, please message first.",
+      "authorFirstName": "Rosa", "area": "Papago Park area", "lat": 33.4455, "lng": -111.9480,
+      "distanceMiles": 0.6, "kidsAges": [1, 3], "times": ["sat-am", "sun-am"], "publicOnly": false,
+      "trust": "met", "metCount": 5
+    },
+    {
+      "id": "s2", "board": "share",
+      "text": "Can I borrow a folding table and six chairs for a birthday party Saturday afternoon?",
+      "authorFirstName": "Taylor", "area": "Hudson neighborhood", "lat": 33.4265, "lng": -111.9310,
+      "distanceMiles": 0.3, "kidsAges": [6], "times": ["sat-pm"], "publicOnly": true,
+      "trust": "new", "metCount": 0
+    },
+    {
+      "id": "s3", "board": "share",
+      "text": "Free to borrow: kids bikes sized for ages 5 to 8, plus helmets. Meet at the park.",
+      "authorFirstName": "Imani", "area": "Gammage area", "lat": 33.4175, "lng": -111.9250,
+      "distanceMiles": 0.8, "kidsAges": [5, 8], "times": ["sat-am", "sun-pm"], "publicOnly": true,
+      "trust": "invited", "metCount": 2, "invitedBy": "Rosa"
+    },
+    {
+      "id": "t1", "board": "street",
+      "text": "Sidewalk blocked by construction fencing on the north side of Mill Ave near the crossing. Use the south side.",
+      "authorFirstName": "Neighbors", "area": "Mill Ave area", "lat": 33.4225, "lng": -111.9395,
+      "distanceMiles": 0.5, "kidsAges": [], "times": [], "publicOnly": true,
+      "trust": "new", "metCount": 0, "confirmations": 4, "lastConfirmedMinutesAgo": 20
+    },
+    {
+      "id": "t2", "board": "street",
+      "text": "Elevator at the nearby transit station is out of service. Stairs only right now.",
+      "authorFirstName": "Neighbors", "area": "Downtown", "lat": 33.4260, "lng": -111.9420,
+      "distanceMiles": 0.9, "kidsAges": [], "times": [], "publicOnly": true,
+      "trust": "new", "metCount": 0, "confirmations": 2, "lastConfirmedMinutesAgo": 95
+    },
+    {
+      "id": "t3", "board": "street",
+      "text": "Shaded cooling spot open at the library this afternoon, with water and seating.",
+      "authorFirstName": "Neighbors", "area": "Hudson neighborhood", "lat": 33.4285, "lng": -111.9330,
+      "distanceMiles": 0.4, "kidsAges": [], "times": [], "publicOnly": true,
+      "trust": "new", "metCount": 0, "confirmations": 6, "lastConfirmedMinutesAgo": 12
+    }
+  ]
+}
