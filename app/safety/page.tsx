@@ -1,6 +1,6 @@
 export default function Safety() {
   return (
-    <>
+    <div className="info-sheet">
       <h1>How we build trust, one step at a time</h1>
       <p className="lead">
         We do not run background checks. Neighbors build trust in steps, and the final call is
@@ -49,6 +49,6 @@ export default function Safety() {
           </p>
         </section>
       </div>
-    </>
+    </div>
   );
 }

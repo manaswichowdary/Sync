@@ -26,7 +26,7 @@ export function PreferenceForm({
   const [message, setMessage] = useState("");
 
   return (
-    <>
+    <div className="info-sheet">
       <h1>What you hear about</h1>
       <p className="lead">Only you can see this: help given {helpGiven}, help received {helpReceived}.</p>
       <form className="card" onSubmit={async (event) => {
@@ -68,6 +68,6 @@ export function PreferenceForm({
           </article>
         ))}
       </div>
-    </>
+    </div>
   );
 }

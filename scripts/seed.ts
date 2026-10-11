@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { approvedText } from "../lib/approveText";
-import { CODE_DEFAULT_MAX_USES, CODE_EXPIRY_DAYS } from "../lib/config";
+import { CODE_DEFAULT_MAX_USES } from "../lib/config";
 import { codeExpiresAt, updateExpiresAt } from "../lib/groupRules";
 import { missingSupabaseEnv } from "../lib/supabase/env";
 
@@ -24,17 +24,27 @@ const POSTS = [
   { key: "park", email: "marcus.bell@example.com", kind: "need", topic: null, text: "Pickup from the park on Friday" },
   { key: "monday", email: "sam.ortiz@example.com", kind: "offer", topic: null, text: "Can do Monday pickups" },
   { key: "stroller", email: "priya.nair@example.com", kind: "offer", topic: null, text: "Happy to lend a stroller" },
-  { key: "coffee", email: "dana.ellis@example.com", kind: "gather", topic: null, text: "Saturday coffee on the corner" },
-  { key: "play", email: "priya.nair@example.com", kind: "gather", topic: null, text: "Playdate at the park, ages 5 to 8" },
-  { key: "swap", email: "marcus.bell@example.com", kind: "gather", topic: null, text: "Sunday toy swap" },
-  { key: "road", email: "dana.ellis@example.com", kind: "update", topic: "road_block", text: "Maple Ave closed Tuesday for water work" },
-  { key: "dentist", email: "sam.ortiz@example.com", kind: "update", topic: "question", text: "Know a good family dentist nearby?" },
-  { key: "door", email: "marcus.bell@example.com", kind: "update", topic: "heads_up", text: "The lobby door sticks, pull firmly" },
+  { key: "playdate", email: "dana.ellis@example.com", kind: "gather", topic: null, text: "Playdate at Maple Court Park on Saturday, 10 AM." },
+  { key: "potluck", email: "sam.ortiz@example.com", kind: "gather", topic: null, text: "Sunday neighborhood potluck. Sunday 5:00 PM in the community room." },
+  { key: "walk", email: "marcus.bell@example.com", kind: "gather", topic: null, text: "Walk to school together. Wednesday 7:45 AM at the front gate." },
+  { key: "welcome", email: "dana.ellis@example.com", kind: "update", topic: "heads_up", text: "Welcome to Maple Court Neighbors! Say hi here." },
+  { key: "dentist", email: "priya.nair@example.com", kind: "update", topic: "question", text: "Anyone know a good pediatric dentist nearby?" },
+  { key: "cleaning", email: "marcus.bell@example.com", kind: "update", topic: "heads_up", text: "Reminder: street cleaning is Tuesday morning, please move cars." },
+  { key: "thanks", email: "sam.ortiz@example.com", kind: "update", topic: "heads_up", text: "Thanks to everyone who helped with pickups this week." },
+];
+
+const RETIRED_TEXTS = [
+  "Saturday coffee on the corner",
+  "Playdate at the park, ages 5 to 8",
+  "Sunday toy swap",
+  "Maple Ave closed Tuesday for water work",
+  "Know a good family dentist nearby?",
+  "The lobby door sticks, pull firmly",
 ];
 
 const REPLIES = [
-  { post: "dentist", email: "priya.nair@example.com", text: "The clinic near the market is gentle with families." },
-  { post: "dentist", email: "dana.ellis@example.com", text: "The community center keeps a short list of dentists." },
+  { post: "dentist", email: "dana.ellis@example.com", text: "The clinic near the market is gentle with families." },
+  { post: "dentist", email: "sam.ortiz@example.com", text: "The community center keeps a short list of dentists." },
 ];
 
 const FREE_TIMES = [
@@ -145,15 +155,30 @@ async function main() {
   }
 
   const danaId = ids.get("dana.ellis@example.com") as string;
-  const foundGroup = await from("groups")
-    .select("id")
-    .eq("name", GROUP_NAME)
-    .eq("removed", false)
-    .limit(1)
-    .maybeSingle();
-  if (foundGroup.error) fail(publicError(foundGroup.error));
+  const meEmail = process.env.SEED_ME_EMAIL?.trim();
+  let meId: string | null = null;
+  if (meEmail) {
+    meId = await findAuthId(db, meEmail);
+    if (!meId) fail("SEED_ME_EMAIL is not signed up yet.");
+  }
 
-  let groupId = foundGroup.data?.id as string | undefined;
+  const namedGroups = await from("groups").select("id").eq("name", GROUP_NAME).eq("removed", false);
+  if (namedGroups.error) fail(publicError(namedGroups.error));
+  const namedIds = (namedGroups.data ?? []).map((group: { id: string }) => group.id as string);
+
+  let groupId: string | undefined;
+  if (meId && namedIds.length) {
+    const mine = await from("group_members").select("group_id").eq("user_id", meId).in("group_id", namedIds);
+    if (mine.error) fail(publicError(mine.error));
+    groupId = mine.data?.[0]?.group_id as string | undefined;
+  }
+  if (!groupId) {
+    const holder = await from("invite_codes").select("group_id").eq("code", CODE).maybeSingle();
+    if (holder.error) fail(publicError(holder.error));
+    if (holder.data && namedIds.includes(holder.data.group_id)) groupId = holder.data.group_id as string;
+  }
+  if (!groupId) groupId = namedIds[0];
+
   if (!groupId) {
     groupId = crypto.randomUUID();
     const inserted = await from("groups").insert({
@@ -182,6 +207,19 @@ async function main() {
     }).eq("id", groupId);
   }
 
+  for (const otherId of namedIds) {
+    if (otherId === groupId) continue;
+    if (meId) {
+      const belongs = await from("group_members").select("user_id").eq("group_id", otherId).eq("user_id", meId).maybeSingle();
+      if (belongs.error) fail(publicError(belongs.error));
+      if (belongs.data) continue;
+    }
+    const moved = await from("invite_codes").update({ group_id: groupId }).eq("group_id", otherId);
+    if (moved.error) fail(publicError(moved.error));
+    const removed = await from("groups").delete().eq("id", otherId).eq("name", GROUP_NAME);
+    if (removed.error) fail(publicError(removed.error));
+  }
+
   for (const person of PEOPLE) {
     const userIdForPerson = ids.get(person.email) as string;
     const member = await from("group_members")
@@ -201,11 +239,7 @@ async function main() {
     if (inserted.error) fail(publicError(inserted.error));
   }
 
-  const meEmail = process.env.SEED_ME_EMAIL?.trim();
-  let meId: string | null = null;
-  if (meEmail) {
-    meId = await findAuthId(db, meEmail);
-    if (!meId) fail("SEED_ME_EMAIL is not signed up yet.");
+  if (meId) {
     const profile = await from("profiles").select("id").eq("id", meId).maybeSingle();
     if (profile.error) fail(publicError(profile.error));
     if (!profile.data) {
@@ -232,19 +266,39 @@ async function main() {
     }
   }
 
-  const foundCode = await from("invite_codes").select("code, group_id").eq("code", CODE).maybeSingle();
+  const foundCode = await from("invite_codes").select("code, group_id, uses").eq("code", CODE).maybeSingle();
   if (foundCode.error) fail(publicError(foundCode.error));
-  if (foundCode.data && foundCode.data.group_id !== groupId) fail("SYNC-DEMO is already used by another group.");
-  if (!foundCode.data) {
-    const inserted = await from("invite_codes").insert({
-      code: CODE,
-      group_id: groupId,
-      created_by: danaId,
-      max_uses: CODE_DEFAULT_MAX_USES,
-      uses: 0,
-      expires_at: codeExpiresAt(new Date(), CODE_EXPIRY_DAYS).toISOString(),
-    });
+  if (foundCode.data && foundCode.data.group_id !== groupId) {
+    const owner = await from("groups").select("name").eq("id", foundCode.data.group_id).maybeSingle();
+    if (owner.error) fail(publicError(owner.error));
+    if (owner.data?.name !== GROUP_NAME) fail("Could not attach the demo code.");
+    const moved = await from("invite_codes").update({ group_id: groupId }).eq("code", CODE);
+    if (moved.error) fail(publicError(moved.error));
+  }
+  const uses = Number(foundCode.data?.uses ?? 0);
+  const codeFields = {
+    group_id: groupId,
+    created_by: danaId,
+    max_uses: Math.max(CODE_DEFAULT_MAX_USES, uses + 5),
+    expires_at: codeExpiresAt(new Date(), 30).toISOString(),
+  };
+  if (foundCode.data) {
+    const updated = await from("invite_codes").update(codeFields).eq("code", CODE);
+    if (updated.error) fail(publicError(updated.error));
+  } else {
+    const inserted = await from("invite_codes").insert({ code: CODE, uses: 0, ...codeFields });
     if (inserted.error) fail(publicError(inserted.error));
+  }
+  const extraCodes = await from("invite_codes").select("code").eq("group_id", groupId).neq("code", CODE);
+  if (extraCodes.error) fail(publicError(extraCodes.error));
+  for (const extra of extraCodes.data ?? []) {
+    const removed = await from("invite_codes").delete().eq("code", extra.code).eq("group_id", groupId);
+    if (removed.error) fail(publicError(removed.error));
+  }
+
+  for (const text of RETIRED_TEXTS) {
+    const removed = await from("posts").delete().eq("group_id", groupId).eq("text", text);
+    if (removed.error) fail(publicError(removed.error));
   }
 
   const postIds = new Map<string, string>();
@@ -259,6 +313,13 @@ async function main() {
     if (existing.error) fail(publicError(existing.error));
     if (existing.data?.id) {
       postIds.set(post.key, existing.data.id);
+      if (post.kind === "update") {
+        const refreshed = await from("posts").update({
+          expires_at: updateExpiresAt(new Date()).toISOString(),
+          topic: post.topic,
+        }).eq("id", existing.data.id);
+        if (refreshed.error) fail(publicError(refreshed.error));
+      }
       continue;
     }
     const inserted = await from("posts").insert({
@@ -287,15 +348,23 @@ async function main() {
     if (inserted.error) fail(publicError(inserted.error));
   }
 
-  for (const name of ["dana.ellis@example.com", "sam.ortiz@example.com"]) {
-    const postId = postIds.get("coffee");
-    const user = ids.get(name);
-    if (!postId || !user) continue;
-    const existing = await from("gather_rsvps").select("user_id").eq("post_id", postId).eq("user_id", user).maybeSingle();
-    if (existing.error) fail(publicError(existing.error));
-    if (existing.data) continue;
-    const inserted = await from("gather_rsvps").insert({ post_id: postId, user_id: user });
-    if (inserted.error) fail(publicError(inserted.error));
+  const gatherings: { key: string; emails: string[] }[] = [
+    { key: "playdate", emails: ["dana.ellis@example.com", "sam.ortiz@example.com", "priya.nair@example.com"] },
+    { key: "potluck", emails: ["dana.ellis@example.com", "priya.nair@example.com", "marcus.bell@example.com", ...(meEmail ? [meEmail] : [])] },
+    { key: "walk", emails: ["sam.ortiz@example.com", "priya.nair@example.com", "marcus.bell@example.com"] },
+  ];
+  for (const gathering of gatherings) {
+    const postId = postIds.get(gathering.key);
+    if (!postId) continue;
+    for (const email of gathering.emails) {
+      const user = email === meEmail ? meId : ids.get(email);
+      if (!user) continue;
+      const existing = await from("gather_rsvps").select("user_id").eq("post_id", postId).eq("user_id", user).maybeSingle();
+      if (existing.error) fail(publicError(existing.error));
+      if (existing.data) continue;
+      const inserted = await from("gather_rsvps").insert({ post_id: postId, user_id: user });
+      if (inserted.error) fail(publicError(inserted.error));
+    }
   }
 
   for (const offer of FREE_TIMES) {
@@ -344,9 +413,9 @@ async function main() {
 
   const helper = meId ?? samId;
   const finished = [
-    { post: "coffee", requester: danaId, thankYou: "Thank you for coming.", recommend: true },
-    { post: "play", requester: ids.get("priya.nair@example.com") as string, thankYou: "Thank you for the help.", recommend: true },
-    { post: "swap", requester: ids.get("marcus.bell@example.com") as string, thankYou: null, recommend: false },
+    { post: "playdate", requester: danaId, thankYou: "Thank you for coming.", recommend: true },
+    { post: "potluck", requester: ids.get("priya.nair@example.com") as string, thankYou: "Thank you for the help.", recommend: true },
+    { post: "walk", requester: ids.get("marcus.bell@example.com") as string, thankYou: null, recommend: false },
   ];
   for (const item of finished) {
     await ensureExchange(from, postIds.get(item.post) as string, item.requester, helper, {

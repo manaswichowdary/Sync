@@ -12,6 +12,15 @@ const TOPICS = [
   { id: "heads_up", label: "Heads up" },
 ];
 
+function when(iso: string) {
+  const date = new Date(iso);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const hour = date.getHours();
+  const minute = String(date.getMinutes()).padStart(2, "0");
+  const clock = hour % 12 || 12;
+  return `${months[date.getMonth()]} ${date.getDate()}, ${clock}:${minute} ${hour < 12 ? "AM" : "PM"}`;
+}
+
 function daysLeft(iso: string | null) {
   if (!iso) return null;
   const ms = new Date(iso).getTime() - Date.now();
@@ -87,11 +96,11 @@ export function UpdatesPanel({ groupId, posts }: { groupId: string; posts: PostV
             {post.expiresAt ? ` · ${daysLeft(post.expiresAt)}` : ""}
           </p>
           <p>{post.text}</p>
-          <p className="meta">{post.authorName}</p>
+          <p className="meta">{post.authorName} · {when(post.createdAt)}</p>
           {post.replies.map((reply) => (
             <div key={reply.id} className="finding">
               <p>{reply.text}</p>
-              <p className="meta">{reply.authorName}{reply.held ? " · on hold" : ""}</p>
+              <p className="meta">{reply.authorName} · {when(reply.createdAt)}{reply.held ? " · on hold" : ""}</p>
               <ThreadActions groupId={groupId} postId={post.id} replyId={reply.id} />
             </div>
           ))}

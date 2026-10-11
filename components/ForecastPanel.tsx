@@ -36,7 +36,7 @@ export function ForecastPanel({ data }: { data: GroupPageData }) {
       {data.forecast.map((item) => (
         <article key={item.summary} className="card">
           <h2>{item.summary}</h2>
-          <p className="hint">{item.busyLabel} overlaps {item.pickupLabel}.</p>
+          <p className="hint note-line">{item.busyLabel} overlaps {item.pickupLabel}.</p>
           <button className="btn brand" type="button" onClick={() => send(item.summary)}>Send request</button>
         </article>
       ))}
