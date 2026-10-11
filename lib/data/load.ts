@@ -2,8 +2,7 @@ import calendar from "../../data/calendar.json";
 import { badgeLabels, helpCounts, helpGivenThisMonth, recommendationCount } from "../badges";
 import { childLine } from "../childDetails";
 import { activityState, capStatus, daysUntilPause, nextGroupStatus, shouldSuggestMerge } from "../groupRules";
-import { forecastConflicts } from "../forecast";
-import { formatClock } from "../forecast";
+import { emptyGroupConflictSummary, forecastConflicts, formatClock } from "../forecast";
 import type { GroupPageData, PostView } from "../viewTypes";
 import { missingSupabaseEnv } from "../supabase/env";
 import { currentUser, from, serviceDb, type Db } from "./db";
@@ -217,10 +216,10 @@ export async function loadGroupPage(groupId: string): Promise<
   const forecast = forecastConflicts({
     busy: calendar.busy,
     pickups: calendar.pickups,
-    offers: [...realOffers, ...calendar.sampleOffers],
+    offers: realOffers,
     now: new Date(),
   }).map((item) => ({
-    summary: item.summary,
+    summary: (item.helperName || realOffers.length > 0) ? item.summary : emptyGroupConflictSummary(item.summary),
     helperName: item.helperName,
     busyLabel: item.busyLabel,
     pickupLabel: item.pickupLabel,

@@ -2,11 +2,9 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ForecastPanel } from "@/components/ForecastPanel";
 import { GatherPanel } from "@/components/GatherPanel";
-import { GroupMenu } from "@/components/GroupMenu";
 import { HelpPanel } from "@/components/HelpPanel";
 import { InviteCard } from "@/components/InviteCard";
 import { RewardsPanel } from "@/components/RewardsPanel";
-import { SyncMark } from "@/components/SyncMark";
 import { UpdatesPanel } from "@/components/UpdatesPanel";
 import { loadGroupPage } from "@/lib/data/load";
 import type { GroupPageData } from "@/lib/viewTypes";
@@ -58,7 +56,7 @@ function NeighborRow({
 }
 
 function GettingStarted({ groupId, data }: { groupId: string; data: GroupPageData }) {
-  const invited = data.codes.length > 0 || data.group.memberCount > 1;
+  const invited = data.group.memberCount > 1;
   const posted = data.posts.some((post) => post.kind === "need");
   const free = data.freeTimes.length > 0;
   const steps = [
@@ -103,13 +101,6 @@ export default async function GroupPage({
 
   return (
     <div className="group-page">
-      <header className="group-head">
-        <Link href="/?view=home" className="logo" aria-label="Sync">
-          <SyncMark />
-        </Link>
-        <GroupMenu groupId={groupId} />
-      </header>
-
       <div className="group-shell">
         <div className="group-hero">
           <div className="hi-banner group-banner">
