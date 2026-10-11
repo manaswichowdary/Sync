@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createGroupAction, startFounder } from "@/app/actions";
 import type { ActionResult } from "@/lib/actionResult";
+import { EmailCodeForm } from "./EmailCodeForm";
 
 export function FounderForm() {
   const router = useRouter();
   const [draft, setDraft] = useState({ name: "", email: "", phone: "" });
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
+  const [sent, setSent] = useState<{ name: string; email: string; phone: string } | null>(null);
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -17,15 +19,22 @@ export function FounderForm() {
     setMessage("");
     const result = await startFounder(draft);
     setPending(false);
-    if (!result.ok) setMessage(result.error ?? "Could not start.");
-    else {
-      setMessage(result.message ?? "Check your email.");
-      router.refresh();
+    if (!result.ok) {
+      setMessage(result.error ?? "Could not start.");
+      setSent(null);
+      return;
     }
+    setMessage(result.message ?? "Open the link, or type the code from the email.");
+    if (result.message === "You can name the group below.") {
+      router.refresh();
+      return;
+    }
+    setSent({ ...draft });
   }
 
   return (
-    <form className="card form-card" id="new" onSubmit={submit}>
+    <div className="card form-card" id="new">
+      <form onSubmit={submit}>
       <h2>Start a new group</h2>
       <label className="field" htmlFor="founder-name">Name *</label>
       <input id="founder-name" type="text" value={draft.name} onChange={(event) => setDraft({ ...draft, name: event.target.value })} required />
@@ -38,8 +47,16 @@ export function FounderForm() {
       <div className="row">
         <button className="btn brand" disabled={pending}>Email me a login link</button>
       </div>
-      {message && <div className="notice">{message}</div>}
-    </form>
+      </form>
+      {sent ? (
+        <>
+          <div className="notice">{message}</div>
+          <EmailCodeForm email={sent.email} afterStart onResend={() => startFounder(sent)} />
+        </>
+      ) : (
+        message && <div className="notice">{message}</div>
+      )}
+    </div>
   );
 }
 

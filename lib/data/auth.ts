@@ -1,16 +1,18 @@
 import { PENDING_SIGNUP_HOURS } from "../config";
+import { EMAIL_CODE_NOTE, destinationAfterLogin, verifyEmailCode, type EmailCodeClient } from "../emailCode";
+import { loginLinkMessage } from "../loginLinkError";
 import { cleanEmail, firstNameOf, phoneOk } from "../signupFields";
 import type { Db } from "./db";
 import { from } from "./db";
 import { applyInviteCode, assertCodeAvailable } from "./join";
 
-type AuthClient = {
-  auth: {
+type AuthClient = EmailCodeClient & {
+  auth: EmailCodeClient["auth"] & {
     getUser: () => Promise<{ data: { user: { id: string; email?: string; user_metadata?: Record<string, unknown> } | null } }>;
     signInWithOtp: (args: {
       email: string;
       options?: { emailRedirectTo?: string; shouldCreateUser?: boolean; data?: Record<string, string> };
-    }) => Promise<{ error: { message: string } | null }>;
+    }) => Promise<{ error: { message: string; status?: number; code?: string } | null }>;
     signOut: () => Promise<{ error: { message: string } | null }>;
   };
 };
@@ -66,9 +68,12 @@ export async function beginSignup(
   });
   if (error) {
     await from(db, "pending_signups").delete().eq("email", email);
-    return { ok: false as const, error: "We could not send the login link. Your name and phone were not saved." };
+    return {
+      ok: false as const,
+      error: loginLinkMessage(error, "We could not send the login link. Your name and phone were not saved."),
+    };
   }
-  return { ok: true as const, message: "Check your email for a login link. Nothing is posted until you approve it." };
+  return { ok: true as const, message: `${EMAIL_CODE_NOTE} Nothing is posted until you approve it.` };
 }
 
 export async function beginFounder(
@@ -111,9 +116,12 @@ export async function beginFounder(
   });
   if (error) {
     await from(db, "pending_signups").delete().eq("email", email);
-    return { ok: false as const, error: "We could not send the login link. Your name and phone were not saved." };
+    return {
+      ok: false as const,
+      error: loginLinkMessage(error, "We could not send the login link. Your name and phone were not saved."),
+    };
   }
-  return { ok: true as const, message: "Check your email for a login link. Then you can name the group." };
+  return { ok: true as const, message: `${EMAIL_CODE_NOTE} Then you can name the group.` };
 }
 
 export async function beginLogin(supabase: AuthClient, origin: string, emailRaw: string) {
@@ -123,8 +131,26 @@ export async function beginLogin(supabase: AuthClient, origin: string, emailRaw:
     email,
     options: { shouldCreateUser: false, emailRedirectTo: `${origin}/auth/callback` },
   });
-  if (error) return { ok: false as const, error: "We could not send a login link. New neighbors use the signup form." };
-  return { ok: true as const, message: "Check your email for a login link." };
+  if (error) {
+    return {
+      ok: false as const,
+      error: loginLinkMessage(error, "We could not send a login link. New neighbors use the signup form."),
+    };
+  }
+  return { ok: true as const, message: EMAIL_CODE_NOTE };
+}
+
+export async function confirmEmailCode(
+  db: Db,
+  supabase: AuthClient,
+  input: { email: string; token: string; after?: "start" }
+) {
+  const email = cleanEmail(input.email);
+  if (!email) return { ok: false as const, error: "Enter the email you used before.", resend: false as const };
+  const verified = await verifyEmailCode(supabase, email, input.token);
+  if (!verified.ok) return verified;
+  const path = destinationAfterLogin(await finishLogin(db, supabase, null), input.after === "start");
+  return { ok: true as const, path };
 }
 
 async function ensureProfile(db: Db, userId: string, email: string, firstName: string, phone: string, code: string | null) {

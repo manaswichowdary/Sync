@@ -8,4 +8,5 @@ export type ActionResult = {
   findings?: ShownFinding[];
   review?: { allowCreateAnyway: boolean; message: string; names: string[] };
   groupId?: string;
+  resend?: boolean;
 };

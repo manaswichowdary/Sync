@@ -3,13 +3,17 @@
 import { useState } from "react";
 import { createGroupAction, joinWithCode, startLogin, startSignup } from "@/app/actions";
 import type { ActionResult } from "@/lib/actionResult";
+import { EmailCodeForm } from "./EmailCodeForm";
+
+type SignupDraft = { name: string; email: string; phone: string; code: string };
 
 export function LoginForms() {
   const [tab, setTab] = useState<"join" | "return">("join");
-  const [signup, setSignup] = useState({ name: "", email: "", phone: "", code: "" });
+  const [signup, setSignup] = useState<SignupDraft>({ name: "", email: "", phone: "", code: "" });
   const [loginEmail, setLoginEmail] = useState("");
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
+  const [sent, setSent] = useState<{ tab: "join" | "return"; email: string; signup: SignupDraft } | null>(null);
 
   async function submitSignup(event: React.FormEvent) {
     event.preventDefault();
@@ -17,8 +21,13 @@ export function LoginForms() {
     setMessage("");
     const result = await startSignup(signup);
     setPending(false);
-    if (!result.ok) setMessage(result.error ?? "Could not start signup.");
-    else setMessage(result.message ?? "Check your email.");
+    if (!result.ok) {
+      setMessage(result.error ?? "Could not start signup.");
+      setSent(null);
+    } else {
+      setMessage(result.message ?? "Open the link, or type the code from the email.");
+      setSent({ tab: "join", email: signup.email, signup: { ...signup } });
+    }
   }
 
   async function submitLogin(event: React.FormEvent) {
@@ -27,15 +36,20 @@ export function LoginForms() {
     setMessage("");
     const result = await startLogin({ email: loginEmail });
     setPending(false);
-    if (!result.ok) setMessage(result.error ?? "Could not send a link.");
-    else setMessage(result.message ?? "Check your email.");
+    if (!result.ok) {
+      setMessage(result.error ?? "Could not send a link.");
+      setSent(null);
+    } else {
+      setMessage(result.message ?? "Open the link, or type the code from the email.");
+      setSent({ tab: "return", email: loginEmail, signup: { ...signup } });
+    }
   }
 
   return (
     <div className="card login-card form-card">
       <div className="tab-switch" role="tablist">
-        <button className={tab === "join" ? "on" : ""} type="button" role="tab" aria-selected={tab === "join"} onClick={() => setTab("join")}>Join with a code</button>
-        <button className={tab === "return" ? "on" : ""} type="button" role="tab" aria-selected={tab === "return"} onClick={() => setTab("return")}>I already have an account</button>
+        <button className={tab === "join" ? "on" : ""} type="button" role="tab" aria-selected={tab === "join"} onClick={() => { setTab("join"); setMessage(""); setSent(null); }}>Join with a code</button>
+        <button className={tab === "return" ? "on" : ""} type="button" role="tab" aria-selected={tab === "return"} onClick={() => { setTab("return"); setMessage(""); setSent(null); }}>I already have an account</button>
       </div>
       {tab === "join" ? (
         <form onSubmit={submitSignup}>
@@ -60,7 +74,17 @@ export function LoginForms() {
           <button className="btn brand" disabled={pending}>Email me a login link</button>
         </form>
       )}
-      {message && <div className="notice">{message}</div>}
+      {sent && sent.tab === tab ? (
+        <>
+          <div className="notice">{message}</div>
+          <EmailCodeForm
+            email={sent.email}
+            onResend={() => (sent.tab === "join" ? startSignup(sent.signup) : startLogin({ email: sent.email }))}
+          />
+        </>
+      ) : (
+        message && <div className="notice">{message}</div>
+      )}
     </div>
   );
 }

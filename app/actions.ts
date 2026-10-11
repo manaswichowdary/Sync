@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import type { ActionResult } from "@/lib/actionResult";
-import { beginFounder, beginLogin, beginSignup } from "@/lib/data/auth";
+import { beginFounder, beginLogin, beginSignup, confirmEmailCode } from "@/lib/data/auth";
 import { currentUser, serviceDb } from "@/lib/data/db";
 import {
   confirmHelper,
@@ -76,6 +76,17 @@ export async function startFounder(input: { name: string; email: string; phone: 
   const result = await beginFounder(db, supabase, await origin(), input);
   if (result.ok && "ready" in result && result.ready) return { ok: true, message: "You can name the group below." };
   return result.ok ? { ok: true, message: result.message } : { ok: false, error: result.error };
+}
+
+export async function confirmEmailCodeAction(input: { email: string; token: string; after?: "start" }): Promise<ActionResult> {
+  const setup = supabaseSetupMessage();
+  if (setup) return { ok: false, error: setup };
+  const db = serviceDb();
+  const supabase = await createSupabase();
+  if (!db || !supabase) return { ok: false, error: "Add SUPABASE_URL, SUPABASE_ANON_KEY, and SUPABASE_SERVICE_ROLE_KEY in .env.local." };
+  const result = await confirmEmailCode(db, supabase, input);
+  if (!result.ok) return { ok: false, error: result.error, resend: result.resend };
+  redirect(result.path);
 }
 
 export async function startLogin(input: { email: string }): Promise<ActionResult> {
