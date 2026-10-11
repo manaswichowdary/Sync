@@ -8,6 +8,7 @@ export default async function PreferencesPage() {
   const prefs = await loadPreferences();
   if (!prefs) redirect("/");
   return (
+    <div className="center-copy">
     <PreferenceForm
       hearHelp={prefs.hearHelp}
       hearGather={prefs.hearGather}
@@ -16,5 +17,6 @@ export default async function PreferencesPage() {
       helpReceived={prefs.helpReceived}
       threads={prefs.threads}
     />
+    </div>
   );
 }

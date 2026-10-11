@@ -26,8 +26,8 @@ export function PreferenceForm({
   const [message, setMessage] = useState("");
 
   return (
-    <div className="info-sheet">
-      <h1>What you hear about</h1>
+    <div>
+      <h1>Preferences</h1>
       <p className="lead">Only you can see this: help given {helpGiven}, help received {helpReceived}.</p>
       <form className="card" onSubmit={async (event) => {
         event.preventDefault();

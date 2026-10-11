@@ -1,19 +1,44 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { Suspense } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { AppHeader } from "./AppHeader";
 import { PublicHeader } from "./PublicHeader";
 
-export function AppFrame({ signedIn, children }: { signedIn: boolean; children: React.ReactNode }) {
+function FrameChrome({
+  signedIn,
+  groupId,
+  admin,
+}: {
+  signedIn: boolean;
+  groupId: string | null;
+  admin: boolean;
+}) {
   const path = usePathname();
-  const ownHeader = path === "/" || path.startsWith("/g/");
+  const params = useSearchParams();
+  const publicHome = path === "/" && (!signedIn || params.get("view") === "home");
+  if (publicHome) return null;
+  if (signedIn) return <AppHeader groupId={groupId} admin={admin} />;
+  const showInfo = path !== "/login" && path !== "/start" && path !== "/preferences" && path !== "/safety";
+  return <PublicHeader showInfo={showInfo} />;
+}
+
+export function AppFrame({
+  signedIn,
+  groupId,
+  admin,
+  children,
+}: {
+  signedIn: boolean;
+  groupId: string | null;
+  admin: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <>
-      {!ownHeader && (
-        <PublicHeader
-          signedIn={signedIn}
-          showInfo={path !== "/login" && path !== "/start" && path !== "/preferences" && path !== "/safety"}
-        />
-      )}
+      <Suspense fallback={null}>
+        <FrameChrome signedIn={signedIn} groupId={groupId} admin={admin} />
+      </Suspense>
       {children}
     </>
   );

@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { DotField } from "@/components/DotField";
 import { HomeNav } from "@/components/HomeNav";
 import { MemberHome } from "@/components/HomeForms";
-import { PublicHeader } from "@/components/PublicHeader";
 import { principles } from "@/data/principles";
 import { loadHome } from "@/lib/data/load";
 
@@ -54,9 +53,8 @@ export default async function Home({
 
   if (home.user && !seePublic) {
     return (
-      <div className="page-pad">
-        <PublicHeader signedIn />
-        <div className="wrap">
+      <div className="group-page">
+        <div className="group-shell">
           {notices}
           {home.profile ? <MemberHome /> : (
             <p className="lead">Finish joining from the login page. <Link href="/login">Log in / Sign up</Link></p>
