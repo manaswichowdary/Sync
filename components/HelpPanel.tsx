@@ -121,7 +121,7 @@ export function HelpPanel({ data, start, hideEmpty = false }: { data: GroupPageD
           <h2>Help</h2>
           <p>Ask for a hand, or say when you are free.</p>
         </div>
-        <button className="btn" type="button" onClick={() => setComposer(composer === "need" ? null : "need")}>New request</button>
+        <button className="btn flow-btn" type="button" onClick={() => setComposer(composer === "need" ? null : "need")}>New request</button>
       </div>
       <div className="row">
         <button className="btn secondary" type="button" onClick={() => setComposer(composer === "offer" ? null : "offer")}>I can help</button>
@@ -162,10 +162,10 @@ export function HelpPanel({ data, start, hideEmpty = false }: { data: GroupPageD
             <p className="meta">These stay off the group post. They go only to the one helper you confirm, with a family code word, and are deleted 24 hours after you both tap Done.</p>
           </details>
           <h2>2. Check</h2>
-          <button className="btn secondary" type="button" onClick={preview}>Check my request</button>
+          <button className="btn secondary flow-btn" type="button" onClick={preview}>Check my request</button>
           {checked && <p className="meta">Privacy check done.</p>}
           <Findings findings={findings} />
-          <h2>3. Approve and post</h2>
+          <h2 className="step-next">3. Approve and post</h2>
           <button
             className="btn brand"
             type="button"
@@ -212,7 +212,7 @@ export function HelpPanel({ data, start, hideEmpty = false }: { data: GroupPageD
       {empty && !hideEmpty && (
         <section className="card empty-card">
           <p className="empty-mark" aria-hidden="true">❤️</p>
-          <p>No requests yet.</p>
+          <p className="empty-line">No requests yet.</p>
         </section>
       )}
 
@@ -223,7 +223,7 @@ export function HelpPanel({ data, start, hideEmpty = false }: { data: GroupPageD
         {offers.map((post) => (
           <article key={post.id} className="card">
             <p className="status-chip">{statusOf(post)}</p>
-            <p>{post.text}</p>
+            <p className="post-line">{post.text}</p>
             <p className="meta">{post.authorName}</p>
             {post.held && <p className="meta">This is on hold.</p>}
             <ThreadActions groupId={data.group.id} postId={post.id} />
@@ -267,7 +267,7 @@ function NeedCard({
       <p className="status-chip">{statusOf(post)}</p>
       {post.safetyNotice && <p className="meta">This stays visible because you are part of the exchange.</p>}
       {post.held && <p className="meta">This is on hold.</p>}
-      <p>{post.text}</p>
+      <p className="post-line">{post.text}</p>
       <p className="meta">{post.authorName}</p>
       {post.pendingChild && <p className="meta">Private details saved. They stay hidden until you confirm one helper.</p>}
       {post.authorId !== me && !mine && !post.held && (
@@ -282,7 +282,7 @@ function NeedCard({
         const myDone = exchange.helperId === me ? exchange.helperDone : exchange.requesterDone;
         return (
           <div key={exchange.id} className="finding">
-            <p>{exchange.helperName} offered to help.</p>
+            <p className="post-line">{exchange.helperName} offered to help.</p>
             {post.authorId === me && !chosen && (
               <button className="btn brand" type="button" onClick={async () => onDone(await confirmHelperAction({ groupId, exchangeId: exchange.id }))}>
                 Confirm {exchange.helperName}

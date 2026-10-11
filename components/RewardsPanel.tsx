@@ -41,7 +41,7 @@ export function RewardsPanel({ data }: { data: GroupPageData }) {
 
       <section className="card">
         <h2>Your badges</h2>
-        {(!mine || mine.badges.length === 0) && <p>No badges yet. They show up after an invite, finished help, or a recommendation.</p>}
+        {(!mine || mine.badges.length === 0) && <p className="empty-line">No badges yet. They show up after an invite, finished help, or a recommendation.</p>}
         {mine?.badges.map((badge) => (
           <p key={badge}>
             <span className="badge">{badge}</span>
@@ -52,24 +52,24 @@ export function RewardsPanel({ data }: { data: GroupPageData }) {
 
       <section className="card">
         <h2>Your impact</h2>
-        <p className="kicker">Only you can see this</p>
-        <p>Help given: {data.me.helpGiven}</p>
-        <p>Help received: {data.me.helpReceived}</p>
+        <p className="kicker stat-line">Only you can see this</p>
+        <p className="stat-line">Help given: {data.me.helpGiven}</p>
+        <p className="stat-line">Help received: {data.me.helpReceived}</p>
       </section>
 
       <section className="card">
         <h2>Group this month</h2>
-        <p>Help given this month: {data.group.helpThisMonth}</p>
+        <p className="stat-line">Help given this month: {data.group.helpThisMonth}</p>
         <p className="hint">A shared count with no names.</p>
       </section>
 
       <section className="card">
         <h2>Thank you notes</h2>
-        {notes.length === 0 && <p>No thank you notes yet.</p>}
+        {notes.length === 0 && <p className="empty-line">No thank you notes yet.</p>}
         {notes.map((note) => (
           <article key={note.id} className="finding">
-            <p>{note.text}</p>
-            <p className="hint">After: {note.about}</p>
+            <p className="post-line">{note.text}</p>
+            <p className="hint thanks-after">After: {note.about}</p>
           </article>
         ))}
         {prompts.map((item) => (
@@ -108,11 +108,11 @@ function ThanksForm({
       setMessage("");
       onSaved();
     }}>
-      <p>Leave a thank you for {name}.</p>
-      <p className="hint">After: {about}</p>
-      <label className="field" htmlFor={`thanks-${exchangeId}`}>Thank you note</label>
+      <p className="thanks-prompt">Leave a thank you for {name}.</p>
+      <p className="hint thanks-after">After: {about}</p>
+      <label className="field thanks-label" htmlFor={`thanks-${exchangeId}`}>Thank you note</label>
       <textarea id={`thanks-${exchangeId}`} value={note} onChange={(event) => setNote(event.target.value)} />
-      <label className="check-line">
+      <label className="check-line thanks-check">
         <input type="checkbox" checked={recommend} onChange={(event) => setRecommend(event.target.checked)} /> Recommend this neighbor
       </label>
       <div className="row">

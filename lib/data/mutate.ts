@@ -414,14 +414,21 @@ export async function savePrefs(
   return { ok: true };
 }
 
-export async function toggleRsvp(db: Db, user: User, input: { groupId: string; postId: string }): Promise<ActionResult> {
+export async function toggleRsvp(db: Db, user: User, input: { groupId: string; postId: string; direction: "in" | "out" }): Promise<ActionResult> {
   const blocked = await openGroup(db, input.groupId, user.id);
   if (blocked) return blocked;
   const { data: post } = await from(db, "posts").select("id, kind, removed, held").eq("id", input.postId).eq("group_id", input.groupId).maybeSingle();
   if (!post || post.removed || post.held || post.kind !== "gather") return { ok: false, error: "That gathering is not open." };
-  const { data: existing } = await from(db, "gather_rsvps").select("user_id").eq("post_id", post.id).eq("user_id", user.id).maybeSingle();
-  if (existing) await from(db, "gather_rsvps").delete().eq("post_id", post.id).eq("user_id", user.id);
-  else await from(db, "gather_rsvps").insert({ post_id: post.id, user_id: user.id });
+  const subject = `gather-choice:${post.id}:${user.id}`;
+  const tries = input.direction === "in" ? 1 : 2;
+  const { data: existing } = await from(db, "code_attempts").select("tries").eq("subject", subject).maybeSingle();
+  if (existing?.tries === tries) return { ok: true };
+  const saved = await from(db, "code_attempts").upsert({
+    subject,
+    tries,
+    updated_at: new Date().toISOString(),
+  });
+  if (saved.error) return { ok: false, error: "Could not update that." };
   await touchActivity(db, input.groupId);
   return { ok: true };
 }

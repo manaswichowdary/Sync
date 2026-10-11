@@ -31,7 +31,7 @@ export function AppHeader({ groupId, admin }: { groupId: string | null; admin: b
       </Link>
       <div className="menu" ref={box}>
         <button className="text-btn" type="button" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
-          Menu
+          MENU
         </button>
         {open && (
           <div className="menu-panel">

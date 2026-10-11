@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loginLinkMessage } from "./loginLinkError";
 
-const FALLBACK = "We could not send the login link. Your name and phone were not saved.";
-const WAIT = "Please wait a minute, then ask for a new link.";
+const FALLBACK = "We could not send the login code. Your name and phone were not saved.";
+const WAIT = "Please wait a minute, then ask for a new code.";
 const MAIL = "Our email service had a problem. Please try again in a few minutes.";
 
 function capture(run: () => string) {

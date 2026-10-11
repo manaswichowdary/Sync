@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createGroupAction, startFounder } from "@/app/actions";
 import type { ActionResult } from "@/lib/actionResult";
+import { EMAIL_CODE_NOTE, noteAfterCode } from "@/lib/emailCode";
 import { EmailCodeForm } from "./EmailCodeForm";
 
 export function FounderForm() {
@@ -24,7 +25,7 @@ export function FounderForm() {
       setSent(null);
       return;
     }
-    setMessage(result.message ?? "Open the link, or type the code from the email.");
+    setMessage(result.message ?? EMAIL_CODE_NOTE);
     if (result.message === "You can name the group below.") {
       router.refresh();
       return;
@@ -45,13 +46,13 @@ export function FounderForm() {
       <input id="founder-phone" type="tel" autoComplete="tel" value={draft.phone} onChange={(event) => setDraft({ ...draft, phone: event.target.value })} required />
       <p className="hint">It is not shown on the group.</p>
       <div className="row">
-        <button className="btn brand" disabled={pending}>Email me a login link</button>
+        <button className="btn brand" disabled={pending}>Email me a login code</button>
       </div>
       </form>
       {sent ? (
         <>
-          <div className="notice">{message}</div>
           <EmailCodeForm email={sent.email} afterStart onResend={() => startFounder(sent)} />
+          {noteAfterCode(message) && <div className="notice">{noteAfterCode(message)}</div>}
         </>
       ) : (
         message && <div className="notice">{message}</div>

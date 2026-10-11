@@ -18,7 +18,7 @@ export function AdminList({
     if (result.ok) router.refresh();
   }
 
-  if (reports.length === 0) return <p>Nothing is on hold.</p>;
+  if (reports.length === 0) return <p className="hold-line">Nothing is on hold.</p>;
 
   return (
     <div className="grid">

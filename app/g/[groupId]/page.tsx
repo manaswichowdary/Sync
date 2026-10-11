@@ -12,11 +12,11 @@ import type { GroupPageData } from "@/lib/viewTypes";
 export const dynamic = "force-dynamic";
 
 const tabs = [
-  { id: "help", title: "Help", mark: "❤️" },
-  { id: "forecast", title: "Calendar", mark: "⏰" },
-  { id: "gather", title: "Gather", mark: "🤗" },
-  { id: "updates", title: "Discussion Forum", mark: "📝" },
-  { id: "rewards", title: "Rewards", mark: "⭐" },
+  { id: "help", title: "HELP", mark: "❤️" },
+  { id: "forecast", title: "CALENDAR", mark: "⏰" },
+  { id: "gather", title: "GATHER", mark: "🤗" },
+  { id: "updates", title: "DISCUSSION FORUM", mark: "📝" },
+  { id: "rewards", title: "REWARDS", mark: "⭐" },
 ] as const;
 
 function dayName(value: string) {
@@ -186,7 +186,7 @@ export default async function GroupPage({
             </section>
             <section className="card side-card">
               <h2>Help given this month</h2>
-              <p>{data.group.helpThisMonth}</p>
+              <p className="stat-line">{data.group.helpThisMonth}</p>
               <p className="hint">A shared count with no names.</p>
             </section>
             <section className="card side-card">

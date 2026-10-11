@@ -70,7 +70,7 @@ export async function beginSignup(
     await from(db, "pending_signups").delete().eq("email", email);
     return {
       ok: false as const,
-      error: loginLinkMessage(error, "We could not send the login link. Your name and phone were not saved."),
+      error: loginLinkMessage(error, "We could not send the login code. Your name and phone were not saved."),
     };
   }
   return { ok: true as const, message: `${EMAIL_CODE_NOTE} Nothing is posted until you approve it.` };
@@ -118,7 +118,7 @@ export async function beginFounder(
     await from(db, "pending_signups").delete().eq("email", email);
     return {
       ok: false as const,
-      error: loginLinkMessage(error, "We could not send the login link. Your name and phone were not saved."),
+      error: loginLinkMessage(error, "We could not send the login code. Your name and phone were not saved."),
     };
   }
   return { ok: true as const, message: `${EMAIL_CODE_NOTE} Then you can name the group.` };
@@ -134,7 +134,7 @@ export async function beginLogin(supabase: AuthClient, origin: string, emailRaw:
   if (error) {
     return {
       ok: false as const,
-      error: loginLinkMessage(error, "We could not send a login link. New neighbors use the signup form."),
+      error: loginLinkMessage(error, "We could not send a login code. New neighbors use the signup form."),
     };
   }
   return { ok: true as const, message: EMAIL_CODE_NOTE };

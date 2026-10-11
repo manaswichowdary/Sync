@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createGroupAction, joinWithCode, startLogin, startSignup } from "@/app/actions";
 import type { ActionResult } from "@/lib/actionResult";
+import { EMAIL_CODE_NOTE, noteAfterCode } from "@/lib/emailCode";
 import { EmailCodeForm } from "./EmailCodeForm";
 
 type SignupDraft = { name: string; email: string; phone: string; code: string };
@@ -25,7 +26,7 @@ export function LoginForms() {
       setMessage(result.error ?? "Could not start signup.");
       setSent(null);
     } else {
-      setMessage(result.message ?? "Open the link, or type the code from the email.");
+      setMessage(result.message ?? EMAIL_CODE_NOTE);
       setSent({ tab: "join", email: signup.email, signup: { ...signup } });
     }
   }
@@ -37,10 +38,10 @@ export function LoginForms() {
     const result = await startLogin({ email: loginEmail });
     setPending(false);
     if (!result.ok) {
-      setMessage(result.error ?? "Could not send a link.");
+      setMessage(result.error ?? "Could not send a login code.");
       setSent(null);
     } else {
-      setMessage(result.message ?? "Open the link, or type the code from the email.");
+      setMessage(result.message ?? EMAIL_CODE_NOTE);
       setSent({ tab: "return", email: loginEmail, signup: { ...signup } });
     }
   }
@@ -63,24 +64,24 @@ export function LoginForms() {
           <p className="hint">It is not shown on the group.</p>
           <label className="field" htmlFor="code">Group code *</label>
           <input id="code" type="text" value={signup.code} onChange={(event) => setSignup({ ...signup, code: event.target.value })} required />
-          <p className="hint">Ask a neighbor for this.</p>
-          <button className="btn brand" disabled={pending}>Email me a login link</button>
+          <p className="hint">Testing Sync? Use <strong>SYNC-DEMO</strong>.</p>
+          <button className="btn brand" disabled={pending}>Email me a login code</button>
         </form>
       ) : (
         <form onSubmit={submitLogin}>
           <label className="field" htmlFor="login-email">Email *</label>
           <input id="login-email" type="email" autoComplete="email" value={loginEmail} onChange={(event) => setLoginEmail(event.target.value)} required />
           <p className="hint">Use the email from before.</p>
-          <button className="btn brand" disabled={pending}>Email me a login link</button>
+          <button className="btn brand" disabled={pending}>Email me a login code</button>
         </form>
       )}
       {sent && sent.tab === tab ? (
         <>
-          <div className="notice">{message}</div>
           <EmailCodeForm
             email={sent.email}
             onResend={() => (sent.tab === "join" ? startSignup(sent.signup) : startLogin({ email: sent.email }))}
           />
+          {noteAfterCode(message) && <div className="notice">{noteAfterCode(message)}</div>}
         </>
       ) : (
         message && <div className="notice">{message}</div>

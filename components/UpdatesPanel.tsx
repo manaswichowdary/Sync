@@ -85,7 +85,7 @@ export function UpdatesPanel({ groupId, posts }: { groupId: string; posts: PostV
       {posts.length === 0 && (
         <section className="card empty-card">
           <p className="empty-mark" aria-hidden="true">📝</p>
-          <p>No notes yet.</p>
+          <p className="empty-line">No notes yet.</p>
         </section>
       )}
       {posts.map((post) => (
@@ -95,11 +95,11 @@ export function UpdatesPanel({ groupId, posts }: { groupId: string; posts: PostV
             {TOPICS.find((item) => item.id === post.topic)?.label ?? "Note"}
             {post.expiresAt ? ` · ${daysLeft(post.expiresAt)}` : ""}
           </p>
-          <p>{post.text}</p>
+          <p className="post-line">{post.text}</p>
           <p className="meta">{post.authorName} · {when(post.createdAt)}</p>
           {post.replies.map((reply) => (
             <div key={reply.id} className="finding">
-              <p>{reply.text}</p>
+              <p className="post-line">{reply.text}</p>
               <p className="meta">{reply.authorName} · {when(reply.createdAt)}{reply.held ? " · on hold" : ""}</p>
               <ThreadActions groupId={groupId} postId={post.id} replyId={reply.id} />
             </div>

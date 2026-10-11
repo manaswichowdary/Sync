@@ -8,7 +8,7 @@ export default async function PreferencesPage() {
   const prefs = await loadPreferences();
   if (!prefs) redirect("/");
   return (
-    <div className="center-copy">
+    <div className="center-copy prefs-page">
     <PreferenceForm
       hearHelp={prefs.hearHelp}
       hearGather={prefs.hearGather}

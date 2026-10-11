@@ -44,6 +44,7 @@ export type PostView = {
   replies: ReplyView[];
   rsvpNames: string[];
   viewerIn: boolean;
+  viewerChoice: "in" | "out" | null;
   exchanges: ExchangeView[];
   safetyNotice: boolean;
 };
