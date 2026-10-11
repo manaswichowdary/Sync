@@ -5,9 +5,24 @@ import type { ShownFinding } from "@/lib/actionResult";
 
 type SpeechResult = { transcript?: string; fallback?: boolean; error?: string };
 
-export function VoiceButton({ onText }: { onText: (text: string, findings: ShownFinding[]) => void }) {
+export type VoiceDraft = {
+  display: string;
+  original: string;
+  cleaned: boolean;
+  aiChanged: boolean;
+  findings: ShownFinding[];
+};
+
+export function VoiceButton({
+  onText,
+  reviewed = false,
+}: {
+  onText: (draft: VoiceDraft) => void;
+  reviewed?: boolean;
+}) {
   const [recording, setRecording] = useState(false);
-  const [status, setStatus] = useState("");
+  const [heard, setHeard] = useState(false);
+  const [problem, setProblem] = useState("");
   const recorder = useRef<MediaRecorder | null>(null);
   const chunks = useRef<Blob[]>([]);
 
@@ -21,8 +36,16 @@ export function VoiceButton({ onText }: { onText: (text: string, findings: Shown
     if (!res.ok || typeof data.display !== "string") {
       throw new Error(data.error ?? "Could not prepare that request.");
     }
-    onText(data.display, data.findings ?? []);
-    setStatus("AI helped clean this up. Read it, then approve it.");
+    const original = typeof data.original === "string" ? data.original : transcript;
+    onText({
+      display: data.display,
+      original,
+      cleaned: data.cleaned === true && data.display.trim() !== original.trim(),
+      aiChanged: data.aiChanged === true && data.display.trim() !== original.trim(),
+      findings: data.findings ?? [],
+    });
+    setProblem("");
+    setHeard(true);
   }
 
   function webSpeech(): Promise<string> {
@@ -39,7 +62,7 @@ export function VoiceButton({ onText }: { onText: (text: string, findings: Shown
   }
 
   async function useBrowserSpeech(note: string) {
-    setStatus(note);
+    setProblem(note);
     const transcript = await webSpeech();
     if (!transcript.trim()) throw new Error("We could not hear that. Type your request instead.");
     await phrase(transcript);
@@ -50,12 +73,12 @@ export function VoiceButton({ onText }: { onText: (text: string, findings: Shown
   }
 
   async function start() {
-    setStatus("");
+    setProblem("");
     if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
       try {
         await useBrowserSpeech("Listening.");
       } catch (error) {
-        setStatus(error instanceof Error ? error.message : "Type your request instead.");
+        setProblem(error instanceof Error ? error.message : "Type your request instead.");
       }
       return;
     }
@@ -80,21 +103,29 @@ export function VoiceButton({ onText }: { onText: (text: string, findings: Shown
         }
         await useBrowserSpeech("We could not hear that. Speak once more.");
       } catch (error) {
-        setStatus(error instanceof Error ? error.message : "Type your request instead.");
+        setProblem(error instanceof Error ? error.message : "Type your request instead.");
       }
     };
     recorder.current = media;
     media.start();
     setRecording(true);
-    setStatus("Listening. Tap again when you are done.");
+    setProblem("");
   }
+
+  const note = recording
+    ? "Listening. Tap again when you are done."
+    : problem
+      ? problem
+      : heard && !reviewed
+        ? "Voice typed this. Read it, then approve it."
+        : "";
 
   return (
     <div className="row">
       <button className="btn secondary" type="button" onClick={recording ? stop : start}>
         {recording ? "Stop" : "Speak your request"}
       </button>
-      {status && <span className="meta">{status}</span>}
+      {note && <span className="meta">{note}</span>}
     </div>
   );
 }

@@ -13,7 +13,7 @@ import {
 import type { ShownFinding } from "@/lib/actionResult";
 import type { GroupPageData, PostView } from "@/lib/viewTypes";
 import { ThreadActions } from "./ThreadActions";
-import { VoiceButton } from "./VoiceButton";
+import { VoiceButton, type VoiceDraft } from "./VoiceButton";
 
 const DAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
@@ -42,7 +42,9 @@ export function HelpPanel({ data, start, hideEmpty = false }: { data: GroupPageD
   const [findings, setFindings] = useState<ShownFinding[]>([]);
   const [message, setMessage] = useState("");
   const [checked, setChecked] = useState(false);
-  const [aiCleaned, setAiCleaned] = useState(false);
+  const [originalText, setOriginalText] = useState<string | null>(null);
+  const [cleaned, setCleaned] = useState(false);
+  const [aiChanged, setAiChanged] = useState(false);
 
   const needs = data.posts.filter((post) => post.kind === "need");
   const offers = data.posts.filter((post) => post.kind === "offer");
@@ -70,7 +72,9 @@ export function HelpPanel({ data, start, hideEmpty = false }: { data: GroupPageD
     setOfferText("");
     setNote("");
     setChecked(false);
-    setAiCleaned(false);
+    setOriginalText(null);
+    setCleaned(false);
+    setAiChanged(false);
     setComposer(null);
     router.refresh();
   }
@@ -92,6 +96,24 @@ export function HelpPanel({ data, start, hideEmpty = false }: { data: GroupPageD
     setChecked(true);
   }
 
+  function applyVoice(draft: VoiceDraft) {
+    setText(draft.display);
+    setFindings(draft.findings);
+    setChecked(false);
+    setAiChanged(draft.aiChanged);
+    setCleaned(draft.cleaned);
+    setOriginalText(draft.cleaned ? draft.original : null);
+  }
+
+  function undoClean() {
+    if (originalText === null) return;
+    setText(originalText);
+    setOriginalText(null);
+    setCleaned(false);
+    setAiChanged(false);
+    setChecked(false);
+  }
+
   return (
     <div className="grid">
       <div className="tab-head">
@@ -109,9 +131,28 @@ export function HelpPanel({ data, start, hideEmpty = false }: { data: GroupPageD
         <section className="card composer">
           <h2>1. Write</h2>
           <label className="field" htmlFor="need-text">Your request</label>
-          <textarea id="need-text" value={text} onChange={(event) => { setText(event.target.value); setChecked(false); setAiCleaned(false); }} />
-          <VoiceButton onText={(next, nextFindings) => { setText(next); setFindings(nextFindings); setChecked(true); setAiCleaned(true); }} />
-          {aiCleaned && <p className="ai-label">AI helped clean this up</p>}
+          <textarea
+            id="need-text"
+            value={text}
+            onChange={(event) => {
+              const next = event.target.value;
+              setText(next);
+              setChecked(false);
+              setAiChanged(false);
+              if (originalText === null || next === originalText) {
+                setCleaned(false);
+                setOriginalText(null);
+              }
+            }}
+          />
+          {cleaned && originalText !== null && (
+            <p className="meta">
+              Cleaned up
+              <button className="undo-link" type="button" onClick={undoClean}>Undo</button>
+            </p>
+          )}
+          {aiChanged && <p className="ai-label">AI helped clean this up</p>}
+          <VoiceButton reviewed={checked} onText={applyVoice} />
           <details className="private-box">
             <summary>Private details, shared only with your confirmed helper</summary>
             <label className="field" htmlFor="child-name">Child&apos;s name</label>
@@ -122,6 +163,7 @@ export function HelpPanel({ data, start, hideEmpty = false }: { data: GroupPageD
           </details>
           <h2>2. Check</h2>
           <button className="btn secondary" type="button" onClick={preview}>Check my request</button>
+          {checked && <p className="meta">Privacy check done.</p>}
           <Findings findings={findings} />
           <h2>3. Approve and post</h2>
           <button
@@ -188,19 +230,6 @@ export function HelpPanel({ data, start, hideEmpty = false }: { data: GroupPageD
           </article>
         ))}
       </section>
-
-      <section>
-        <h2>Free times</h2>
-        {data.freeTimes.length === 0 && <p className="hint">No free times yet.</p>}
-        <div className="chip-row">
-          {data.freeTimes.map((offer) => (
-            <span key={offer.id} className="soft-pill">
-              {offer.firstName} · {dayName(offer.weekday)} · {offer.start} to {offer.end}
-              {offer.note ? ` · ${offer.note}` : ""}
-            </span>
-          ))}
-        </div>
-      </section>
     </div>
   );
 }
@@ -242,9 +271,11 @@ function NeedCard({
       <p className="meta">{post.authorName}</p>
       {post.pendingChild && <p className="meta">Private details saved. They stay hidden until you confirm one helper.</p>}
       {post.authorId !== me && !mine && !post.held && (
-        <button className="btn secondary" type="button" onClick={async () => onDone(await offerHelpAction({ groupId, postId: post.id }))}>
-          Offer to help
-        </button>
+        <div className="row">
+          <button className="btn secondary" type="button" onClick={async () => onDone(await offerHelpAction({ groupId, postId: post.id }))}>
+            Offer to help
+          </button>
+        </div>
       )}
       {post.exchanges.map((exchange) => {
         const party = exchange.helperId === me || exchange.requesterId === me;
