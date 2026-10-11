@@ -47,14 +47,15 @@ export async function smoothWithGemini(safeText: string): Promise<string | null>
   return askGemini(prompt);
 }
 
-/** Smooth an already cleaned request. Never call this with the original transcript. */
+/** Clean an already guarded request. Never call this with the original transcript. */
 export async function smoothRequest(safeText: string): Promise<string | null> {
   if (!safeText.trim()) return null;
   const prompt = [
-    "Rewrite this as a clear, warm, low-pressure request to neighbors.",
-    "Keep the same meaning. Do not add names, places, times, or other details",
-    "that are not already there. Keep it under 60 words.",
-    "Return only the rewritten request.",
+    "Clean this spoken request.",
+    "Remove filler words such as uh and um.",
+    "Remove a sentence that repeats an earlier sentence exactly.",
+    "Do not change the meaning. Do not add names, places, times, or other details.",
+    "Return only the cleaned request.",
     "",
     safeText,
   ].join("\n");
