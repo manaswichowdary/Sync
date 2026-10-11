@@ -9,7 +9,7 @@ import "./globals.css";
 
 const nunito = Nunito({
   subsets: ["latin"],
-  weight: ["400", "700", "800"],
+  weight: ["400", "700", "800", "900"],
   display: "swap",
 });
 

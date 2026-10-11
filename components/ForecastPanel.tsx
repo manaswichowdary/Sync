@@ -30,7 +30,7 @@ export function ForecastPanel({ data }: { data: GroupPageData }) {
       {data.forecast.length === 0 && (
         <section className="card empty-card">
           <p className="empty-mark" aria-hidden="true">⏰</p>
-          <p>No busy time in the next 7 days.</p>
+          <p className="empty-line">No busy time in the next 7 days.</p>
         </section>
       )}
       {data.forecast.map((item) => (

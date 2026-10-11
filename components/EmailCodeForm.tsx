@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { confirmEmailCodeAction } from "@/app/actions";
+import { EMAIL_CODE_LABEL, EMAIL_LINK_NOTE } from "@/lib/emailCode";
 import type { ActionResult } from "@/lib/actionResult";
 
 export function EmailCodeForm({
@@ -47,7 +48,7 @@ export function EmailCodeForm({
 
   return (
     <form onSubmit={submit}>
-      <label className="field" htmlFor="email-code">Or enter the code from the email</label>
+      <label className="field" htmlFor="email-code">{EMAIL_CODE_LABEL}</label>
       <input
         id="email-code"
         inputMode="numeric"
@@ -58,6 +59,7 @@ export function EmailCodeForm({
         onChange={(event) => setToken(event.target.value.replace(/\D/g, "").slice(0, 10))}
       />
       <button className="btn brand" disabled={pending}>Sign in</button>
+      <p className="hint">{EMAIL_LINK_NOTE}</p>
       {error && <div className="notice">{error}</div>}
       {canResend && (
         <button className="btn secondary" type="button" disabled={pending} onClick={sendAgain}>

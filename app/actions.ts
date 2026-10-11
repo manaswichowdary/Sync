@@ -174,7 +174,7 @@ export async function createGatherAction(input: { groupId: string; text: string 
   return refresh(input.groupId, await createGather(ready.db, ready.user, input));
 }
 
-export async function rsvpAction(input: { groupId: string; postId: string }) {
+export async function rsvpAction(input: { groupId: string; postId: string; direction: "in" | "out" }) {
   const ready = await gate();
   if (!isGate(ready)) return ready;
   return refresh(input.groupId, await toggleRsvp(ready.db, ready.user, input));

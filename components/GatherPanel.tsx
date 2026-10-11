@@ -12,6 +12,12 @@ export function GatherPanel({ groupId, posts }: { groupId: string; posts: PostVi
   const [text, setText] = useState("");
   const [message, setMessage] = useState("");
 
+  async function setRsvp(postId: string, direction: "in" | "out") {
+    const result = await rsvpAction({ groupId, postId, direction });
+    if (!result.ok) setMessage(result.error ?? "Could not update that.");
+    else router.refresh();
+  }
+
   async function announce(event: React.FormEvent) {
     event.preventDefault();
     const result = await createGatherAction({ groupId, text });
@@ -49,23 +55,21 @@ export function GatherPanel({ groupId, posts }: { groupId: string; posts: PostVi
       {posts.length === 0 && (
         <section className="card empty-card">
           <p className="empty-mark" aria-hidden="true">🤗</p>
-          <p>No plans yet.</p>
+          <p className="empty-line">No plans yet.</p>
         </section>
       )}
       {posts.map((post) => (
         <article key={post.id} className="card">
           {post.safetyNotice && <p className="meta">This stays visible because you are part of the exchange.</p>}
           {post.held && <p className="meta">This is on hold.</p>}
-          <p>{post.text}</p>
+          <p className="post-line">{post.text}</p>
           <p className="meta">{post.authorName}</p>
-          <p>I&apos;m in: {post.rsvpNames.length ? post.rsvpNames.join(", ") : "No one yet."}</p>
-          <button className="btn secondary" type="button" onClick={async () => {
-            const result = await rsvpAction({ groupId, postId: post.id });
-            if (!result.ok) setMessage(result.error ?? "Could not update that.");
-            else router.refresh();
-          }}>
-            {post.viewerIn ? "I'm out" : "I'm in"}
-          </button>
+          {post.viewerChoice === "in" && <p className="post-line rsvp-in">I am in</p>}
+          {post.viewerChoice === "out" && <p className="post-line rsvp-out">I am out</p>}
+          <div className="row">
+            <button className="btn secondary" type="button" onClick={() => setRsvp(post.id, "in")}>I&apos;m in</button>
+            <button className="btn secondary" type="button" onClick={() => setRsvp(post.id, "out")}>I&apos;m out</button>
+          </div>
           <ThreadActions groupId={groupId} postId={post.id} />
         </article>
       ))}

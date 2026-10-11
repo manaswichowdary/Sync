@@ -87,6 +87,9 @@ a { color: var(--brand); }
   gap: 4px 22px;
   margin-left: auto;
 }
+.home-bar .site-nav a,
+.home-bar .btn { font-size: 22px; }
+.home-bar .nav-heart { font-size: 26px; }
 .group-top { padding-left: 0; padding-right: 0; background: transparent; }
 .logo {
   display: inline-flex;
@@ -271,7 +274,7 @@ h3 { font-size: var(--card-title); font-weight: 700; margin: 0 0 var(--space-1);
 .card h2, .side-card h2, .group-page .invite-box h2 { font-size: var(--card-title); font-weight: 700; }
 p.lead { color: #000; font-style: italic; font-weight: 800; margin: 0 0 var(--space-3); max-width: 62ch; font-size: var(--body); }
 
-.group-page { padding-bottom: var(--space-2); font-size: var(--body); }
+.group-page { padding-bottom: var(--space-2); font-size: 20px; }
 .tab-head {
   display: flex;
   align-items: center;
@@ -280,6 +283,17 @@ p.lead { color: #000; font-style: italic; font-weight: 800; margin: 0 0 var(--sp
 }
 .tab-head h2, .tab-head p { margin: 0; }
 .tab-head p { font-size: var(--body); }
+.group-page .tab-head h2 { font-size: 32px; }
+.group-page .tab-head p,
+.group-page .hint,
+.group-page .note-line { font-size: 1.05em; }
+.group-page .card .meta,
+.group-page .meta { font-size: 1.35rem; }
+.group-page label.field,
+.group-page select { font-size: 1.25rem; }
+.group-page .card h2,
+.group-page .side-card h2 { font-size: 1.45rem; }
+p.stat-line { font-size: 1.7rem; }
 .hi-banner {
   background: var(--wash);
   border: 2px solid var(--ink);
@@ -366,10 +380,11 @@ p.lead { color: #000; font-style: italic; font-weight: 800; margin: 0 0 var(--sp
   padding: 24px 20px 48px;
 }
 body:has(.login-wrap) {
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow: auto;
   display: flex;
   flex-direction: column;
+  font-size: 20px;
 }
 body:has(.login-wrap) .topbar { min-height: 52px; padding: 6px 16px; }
 body:has(.login-wrap) .login-wrap {
@@ -380,26 +395,33 @@ body:has(.login-wrap) .login-wrap {
   align-items: center;
   justify-content: center;
   padding: 8px 16px;
-  overflow: hidden;
+  overflow: visible;
 }
 body:has(.login-wrap) .login-stack {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
+  width: min(560px, 100%);
 }
 body:has(.login-wrap) .login-card { padding: 16px 18px; }
 body:has(.login-wrap) .tab-switch { margin-bottom: 8px; }
-body:has(.login-wrap) .tab-switch button { min-height: 40px; height: 40px; }
-body:has(.login-wrap) label.field { margin: 12px 0 6px; font-size: 0.95rem; }
+body:has(.login-wrap) .tab-switch button {
+  min-height: 44px;
+  height: auto;
+  font-size: 1.05em;
+  white-space: normal;
+  text-align: center;
+}
+body:has(.login-wrap) label.field { margin: 12px 0 6px; font-size: 1em; }
 body:has(.login-wrap) input:not([type="checkbox"]):not([type="radio"]):not([type="file"]) {
   height: var(--input);
   min-height: var(--input);
 }
-body:has(.login-wrap) .hint { margin: 6px 0 0; font-size: 0.9rem; line-height: 1.3; }
+body:has(.login-wrap) .hint { margin: 6px 0 0; font-size: 1em; line-height: 1.3; }
 body:has(.login-wrap) .login-card .btn,
 body:has(.login-wrap) .form-card .btn { margin-top: var(--space-2); min-height: var(--control); height: var(--control); }
-body:has(.login-wrap) .login-stack h1 { font-size: var(--title); margin: 0; text-align: center; }
+body:has(.login-wrap) .login-stack h1 { font-size: 52px; margin: 0; text-align: center; }
 body:has(.login-wrap) .login-stack > p { margin: 0; text-align: center; }
 body:has(.login-wrap) .back-home { margin-top: 14px; }
 body:has(.login-wrap) .form-card,
@@ -429,13 +451,15 @@ body:has(.login-wrap) .form-card h2 { font-size: var(--card-title); margin: 0 0 
   margin: 0;
   text-align: center;
 }
+.start-page .login-stack > h1 { font-size: 52px; line-height: 1.1; }
 .start-page .form-card {
   width: 100%;
   text-align: left;
 }
 .start-page .form-card h2 { font-size: var(--card-title); margin: 0 0 4px; }
-.start-page label.field { margin: 12px 0 6px; }
-.start-page .hint { margin: 6px 0 0; }
+.start-page label.field { margin: 12px 0 6px; font-size: 1em; }
+.start-page .hint { margin: 6px 0 0; font-size: 1em; line-height: 1.3; }
+.start-page .form-card .btn { margin-top: var(--space-2); min-height: var(--control); height: var(--control); }
 .start-page .back-home { margin-top: 0; }
 .center-copy {
   width: min(640px, 100%);
@@ -448,6 +472,7 @@ body:has(.center-copy) {
   display: flex;
   flex-direction: column;
 }
+body:has(.start-page) { font-size: 20px; }
 body:has(.start-page) .start-page,
 body:has(.center-copy) .center-copy { flex: 1 0 auto; }
 body:has(.start-page) .start-page { min-height: 0; }
@@ -471,6 +496,7 @@ body:has(.start-page) .start-page { min-height: 0; }
 }
 .tab-switch button.on { background: var(--brand); color: var(--brand-ink); border-color: var(--line); box-shadow: 3px 3px 0 #fff; }
 .hint { margin: var(--space-1) 0 0; color: #000; font-style: italic; font-size: var(--body); font-weight: 800; line-height: 1.4; }
+.hint strong { font-weight: 900; }
 .note-line { color: #000; font-style: italic; font-weight: 800; font-size: var(--body); }
 .ai-label { margin: 12px 0 0; font-weight: 800; }
 .undo-link {
@@ -731,7 +757,7 @@ textarea:focus {
 }
 .stage-title {
   margin: 0;
-  font-size: clamp(2.5rem, 4.4vw, 4.4rem);
+  font-size: clamp(3.4rem, 5.8vw, 6rem);
   font-weight: 800;
   line-height: 0.9;
   letter-spacing: -0.03em;
@@ -739,7 +765,7 @@ textarea:focus {
 .hero-card .tagline {
   margin: 12px 0 8px;
   text-align: left;
-  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  font-size: clamp(1.35rem, 2.3vw, 1.7rem);
 }
 .hero-card .btn { width: auto; margin-top: 8px; }
 .scene-grid { display: grid; gap: 16px; }
@@ -776,11 +802,13 @@ textarea:focus {
   box-shadow: 4px 4px 0 #1E140B;
 }
 @media (max-width: 800px) {
+  .about-row { grid-template-columns: 1fr; gap: 20px; }
+  .about-logo .sync-mark { width: 140px; }
   .home-open { height: auto; overflow: visible; }
   .hero-frame { grid-template-columns: 1fr; }
   .hero-photo { height: 280px; min-height: 280px; }
   .hero-card { padding: 18px; }
-  .stage-title { font-size: 2.4rem; }
+  .stage-title { font-size: 3.2rem; }
 }
 @media (min-width: 900px) {
   .scene-grid { grid-template-columns: 1fr 1fr; }
@@ -792,6 +820,7 @@ textarea:focus {
   .scene-wide img { height: 100%; min-height: 320px; }
 }
 
+.home { font-size: 20px; }
 .home .wrap {
   max-width: none;
   padding-left: 24px;
@@ -801,10 +830,29 @@ textarea:focus {
 .home .about-band {
   margin-top: 36px;
   background: #E4D2BA;
-  padding: 36px 0 28px;
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  padding: 48px 0;
 }
-.about-copy { max-width: 760px; }
-.about-copy p { margin: 0 0 14px; }
+.home .about-band h2 { font-size: 36px; font-weight: 800; }
+.about-copy { max-width: none; width: 100%; margin: 0 auto; padding-left: 40px; padding-right: 48px; }
+.about-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+  min-height: 50vh;
+}
+.about-logo { display: flex; align-items: center; justify-content: center; min-height: 50vh; }
+.about-logo .sync-mark { width: min(100%, 90vh); height: auto; }
+.about-copy p { margin: 0 0 18px; font-size: 1.35rem; line-height: 1.45; font-weight: 700; }
+.about-copy p:last-child { margin-bottom: 0; }
+@media (max-width: 800px) {
+  .about-row { grid-template-columns: 1fr; gap: 20px; min-height: 0; }
+  .about-logo { min-height: 0; }
+  .about-logo .sync-mark { width: 180px; }
+}
 .home .feature-band {
   margin-top: 0;
   background: #F7EFE4;
@@ -813,11 +861,11 @@ textarea:focus {
 .home .feature-band .scene-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 28px 32px;
-  max-width: 980px;
+  gap: 48px 56px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding-left: 36px;
-  padding-right: 36px;
+  padding-left: 28px;
+  padding-right: 28px;
 }
 .home .feature-band .scene-item {
   grid-column: span 2;
@@ -832,49 +880,51 @@ textarea:focus {
   padding: 28px 0 40px;
 }
 .home .lower-band .wrap {
-  max-width: 980px;
+  max-width: 1240px;
   margin: 0 auto;
 }
 .home .lower-band .band { padding: 16px 0; }
-.home .lower-band h2 { font-size: clamp(1.6rem, 3vw, 2rem); }
-.home .lower-band .cards { gap: 16px; }
+.home .lower-band h2 { font-size: 36px; }
+.home .lower-band .cards { gap: 48px 56px; }
 @media (min-width: 800px) {
   .home .lower-band .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
-.home .lower-band .card { padding: 14px 16px; }
-.home .lower-band .card p { margin: 6px 0 0; font-size: 0.95rem; }
-.home .lower-band .cheer { padding: 18px 20px; }
-.home .lower-band .cheer h2 { font-size: 1.5rem; }
-.home .lower-band .cheer p { font-size: 1rem; margin: 0 0 12px; }
+.home .lower-band .card { padding: 22px 24px; }
+.home .lower-band .card h3 { font-size: 28px; font-weight: 800; }
+.home .lower-band .card p { margin: 8px 0 0; font-size: 1.3rem; }
+.home .lower-band .cheer { padding: 28px 28px; }
+.home .lower-band .cheer h2 { font-size: 36px; }
+.home .lower-band .cheer p { font-size: 1.3rem; margin: 0 0 12px; }
 .home .lower-band .section-heart { font-size: 2rem; margin: 0 0 8px; }
 .home .principle-band {
   background: #F6E6D0;
   padding: 28px 0 36px;
 }
 .home .principle-band .wrap {
-  max-width: 980px;
+  max-width: 1240px;
   margin: 0 auto;
 }
-.home .principle-band h2 { font-size: clamp(1.6rem, 3vw, 2rem); }
+.home .principle-band h2 { font-size: 36px; }
 .home .principle-band .cards {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 16px;
+  gap: 48px 56px;
 }
 .home .principle-band .card {
   grid-column: span 2;
-  padding: 14px 16px;
+  padding: 22px 24px;
 }
 .home .principle-band .card:last-child { grid-column: 3 / span 2; }
-.home .principle-band .card p { margin: 6px 0 0; font-size: 0.95rem; }
+.home .principle-band .card h3 { font-size: 28px; font-weight: 800; }
+.home .principle-band .card p { margin: 8px 0 0; font-size: 1.3rem; }
 .home .principle-title {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 .home .principle-band .section-heart {
   margin: 0;
-  font-size: 1.6rem;
+  font-size: 36px;
   line-height: 1;
 }
 
@@ -1068,16 +1118,16 @@ body:has(.group-page) .group-page { flex: 1 0 auto; }
   line-height: 1.2;
   text-align: center;
   white-space: normal;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   box-shadow: var(--shadow);
 }
 .tab-row .tab-mark {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.4rem;
-  height: 2.4rem;
-  font-size: 2rem;
+  width: 2.8rem;
+  height: 2.8rem;
+  font-size: 2.4rem;
   line-height: 1;
 }
 .tab-row .tab-label {
@@ -1118,7 +1168,7 @@ body:has(.group-page) .group-page { flex: 1 0 auto; }
 .home .scene-item { scroll-margin-top: 88px; }
 .home .scene-item h2 {
   margin: 0 0 var(--space-1);
-  font-size: var(--section);
+  font-size: 36px;
 }
 .home .scene-card {
   display: flex;
@@ -1129,22 +1179,23 @@ body:has(.group-page) .group-page { flex: 1 0 auto; }
   overflow: hidden;
 }
 .home .scene-card img {
-  width: calc(100% - 24px);
-  height: 150px;
+  width: calc(100% - 28px);
+  height: 180px;
   max-height: none;
-  margin: 12px 12px 0;
+  margin: 14px 14px 0;
   object-fit: contain;
   object-position: center;
   display: block;
 }
-.home .scene-body { padding: 10px 14px 14px; }
-.home .scene-body p { margin: 0 0 6px; font-size: 0.95rem; }
-.home .scene-body .hint { margin: 0; font-size: var(--body); font-style: italic; font-weight: 800; color: #000; }
+.home .scene-body { padding: 14px 18px 18px; }
+.home .scene-body p { margin: 0 0 8px; font-size: 1.3rem; }
+.home .scene-body .hint { margin: 0; font-size: 1.3rem; font-style: italic; font-weight: 800; color: #000; }
 
 @media (max-width: 800px) {
   .home .feature-band .scene-grid {
     grid-template-columns: 1fr;
-    max-width: 360px;
+    gap: 36px;
+    max-width: 420px;
     padding-left: 20px;
     padding-right: 20px;
   }
@@ -1161,4 +1212,176 @@ body:has(.group-page) .group-page { flex: 1 0 auto; }
   .marquee { overflow: visible; }
   .quote-pill { white-space: normal; }
   .dot-field { display: none; }
+}
+
+/* Last on purpose. A refresh must not let earlier rules shrink these. */
+.group-page .card .meta,
+.group-page .meta {
+  font-size: 28px;
+}
+.group-page label.field,
+.group-page select {
+  font-size: 26px;
+}
+.group-page .card h2,
+.group-page .side-card h2 {
+  font-size: 28px;
+}
+.group-page p.stat-line,
+.group-page .kicker,
+p.lead.stat-line {
+  font-size: 32px;
+}
+.group-page p.post-line {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+.group-page .neighbor-row p { font-size: 28px; }
+.group-page .badge-drop summary { font-size: 24px; }
+.group-page .badge { font-size: 22px; }
+.group-page .side-card > a { font-size: 26px; }
+.group-page .soft-pill { font-size: 22px; }
+.group-page .hint,
+.group-page .note-line,
+.group-page .tab-head p { font-size: 24px; }
+.group-head .text-btn,
+.menu-panel a,
+.menu-panel button { font-size: 22px; }
+.privacy-card { font-size: 20px; }
+.privacy-card h2 { font-size: 28px; }
+.center-copy { font-size: 20px; }
+.center-copy h1 { font-size: 32px; }
+.center-copy .card h2 { font-size: 28px; }
+.center-copy .card p,
+.center-copy .plain-list,
+.center-copy .checks label { font-size: 22px; }
+.center-copy .meta { font-size: 24px; }
+.center-copy p.lead { font-size: 24px; }
+body:has(.start-page) { font-size: 20px; }
+.start-page .login-stack > h1 { font-size: 52px; }
+.start-page label.field,
+.start-page .hint { font-size: 1em; }
+.group-page p.stat-line,
+.group-page .kicker,
+p.lead.stat-line { font-size: 32px; }
+.group-page p.post-line,
+.center-copy p.post-line {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+.group-page p.thanks-prompt { font-size: 28px; }
+.group-page p.thanks-after { font-size: 26px; font-style: italic; }
+.group-page label.thanks-label,
+.group-page label.thanks-check { font-size: 26px; }
+.group-page p.post-line.rsvp-in { color: #3e824e; }
+.group-page p.post-line.rsvp-out { color: #B42318; }
+.group-head .menu .text-btn { font-size: 26px; font-weight: 800; }
+.site-footer { padding: 16px 8px; overflow: hidden; }
+.site-footer p {
+  font-size: min(26px, calc((100vw - 16px) / 93));
+  line-height: 1.35;
+  white-space: nowrap;
+  text-align: center;
+}
+.group-page .flow-btn { min-height: 56px; height: 56px; font-size: 22px; padding: 0 22px; }
+.group-page h2.step-next { margin-top: 24px; }
+.group-page .private-box summary { font-size: 28px; }
+.prefs-page {
+  width: min(880px, 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+.prefs-page .card {
+  text-align: center;
+  padding: 36px 40px;
+}
+.prefs-page h1 { font-size: 36px; }
+.prefs-page p.lead.stat-line,
+.prefs-page .checks label,
+.prefs-page .meta,
+.prefs-page .card p {
+  font-size: 24px;
+  line-height: 1.35;
+}
+.prefs-page .checks {
+  justify-content: center;
+  gap: 16px 32px;
+}
+.prefs-page .checks input {
+  width: 32px;
+  height: 32px;
+  accent-color: #3e824e;
+}
+.prefs-page .row { justify-content: center; }
+.prefs-page .btn {
+  min-height: 56px;
+  height: 56px;
+  font-size: 22px;
+  padding: 0 32px;
+}
+.admin-page p.hold-line,
+.admin-page .card p,
+.admin-page .card .meta {
+  font-size: 26px;
+  line-height: 1.4;
+  font-style: italic;
+  font-weight: 800;
+}
+.group-page p.empty-line {
+  font-size: 26px;
+  line-height: 1.4;
+  font-weight: 800;
+}
+.home .about-band h2,
+.home .scene-item h2,
+.home .lower-band h2,
+.home .lower-band .cheer h2,
+.home .principle-band h2 { font-size: 32px; }
+.home .scene-body p,
+.home .scene-body .hint,
+.home .about-copy p,
+.home .lower-band .card p,
+.home .lower-band .cheer p,
+.home .principle-band .card p,
+.home .hero-card .tagline { font-size: 24px; }
+.home-bar .site-nav a,
+.home-bar .btn { font-size: 24px; }
+body:has(.login-wrap) label.field,
+body:has(.start-page) label.field,
+.start-page label.field { font-size: 26px; }
+body:has(.login-wrap) .hint,
+body:has(.start-page) .hint,
+.start-page .hint,
+body:has(.login-wrap) .login-stack > p,
+.start-page .login-stack > p { font-size: 24px; }
+body:has(.login-wrap) .tab-switch button,
+.start-page .tab-switch button { font-size: 22px; min-height: 56px; }
+body:has(.login-wrap) .form-card h2,
+body:has(.start-page) .form-card h2,
+.start-page .form-card h2 { font-size: 28px; }
+body:has(.login-wrap) .login-card .btn,
+body:has(.login-wrap) .form-card .btn,
+.start-page .form-card .btn {
+  min-height: 56px;
+  height: 56px;
+  font-size: 22px;
+}
+.home-bar .logo .sync-mark { width: 94px; height: 52px; }
+.home-bar .site-nav a.nav-heart { font-size: 32px; }
+.start-page input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+body:has(.login-wrap) input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+.group-page input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+.group-page select {
+  font-size: 26px;
+  height: 56px;
+  min-height: 56px;
+}
+.start-page textarea,
+body:has(.login-wrap) textarea,
+.group-page textarea {
+  font-size: 26px;
 }

@@ -4,7 +4,7 @@ export type LoginLinkFailure = {
   code?: string;
 };
 
-const WAIT = "Please wait a minute, then ask for a new link.";
+const WAIT = "Please wait a minute, then ask for a new code.";
 const MAIL = "Our email service had a problem. Please try again in a few minutes.";
 
 function redactContact(message: string): string {

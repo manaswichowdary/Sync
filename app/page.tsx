@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { DotField } from "@/components/DotField";
 import { HomeNav } from "@/components/HomeNav";
+import { SyncMark } from "@/components/SyncMark";
 import { MemberHome } from "@/components/HomeForms";
 import { principles } from "@/data/principles";
 import { loadHome } from "@/lib/data/load";
@@ -47,7 +48,7 @@ export default async function Home({
       {query.notice === "finish" && (
         <div className="notice">Add your name, phone, and group code to finish joining.</div>
       )}
-      {query.error === "link" && <div className="notice">That login link did not work. Request a new one.</div>}
+      {query.error === "link" && <div className="notice">That login code did not work. Request a new one.</div>}
     </>
   );
 
@@ -96,16 +97,20 @@ export default async function Home({
 
       <section className="band about-band" id="about">
         <div className="wrap about-copy">
-          <h2>About us</h2>
-          <p>Sync is a small, invite only space where neighbors help each other with everyday parenting needs, like rides, pickups, borrowing, and plans for the weekend.</p>
-          <p>Parents are busy, and the best backup is often a neighbor a few doors down. But asking strangers online does not feel safe, and big neighborhood apps can feel loud and public. Sync is built to be the opposite. There is no public feed, no likes, and no public profiles.</p>
-          <p>You join with a code passed from one neighbor to another, so every group starts with people who already know each other. Groups stay small, and everyone nearby is within a mile.</p>
-          <p>AI helps, but people decide. It removes private details, like a child&apos;s name or school, before anything is posted. It suggests who could help, but it never sends anything on its own. You approve every word, and the final call is always made by people, in person.</p>
-          <p>Sync is built on the Humanity principles: compassion, empathy, forgiveness, integrity, kindness, respect, and reflection.</p>
+          <div className="about-row">
+            <div className="about-logo" aria-hidden="true"><SyncMark /></div>
+            <div>
+              <h2>About us</h2>
+              <p>Parenting is hard to do alone, and most parents do not know who to ask when a pickup falls through or a schedule clashes. Asking a stranger online feels risky, and posting a child&apos;s name, school or address is a real safety concern.</p>
+              <p>Sync is a free, invite only app where neighbors help each other with rides, pickups, borrowing and small gatherings. A parent writes or speaks a request, and our privacy guard catches kids&apos; names, schools and addresses before anything is shared. AI then helps reword the message so it is clear and kind, but the parent always reads it and approves it first.</p>
+              <p>Requests are matched with neighbors who live within one mile and are free at the right time, and a calendar view spots busy times and suggests a request that is only sent when the parent taps Send. Any private details go only to the helper who confirms, and they are deleted 24 hours after both people mark the exchange done.</p>
+              <p>Trust badges and private help counts recognize kindness without leaderboards, and reports pause a post right away. Sync helps neighbors show up for each other, and people always stay in charge.</p>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="band feature-band">
+      <section className="band feature-band" id="features">
         <div className="wrap scene-grid">
           <div className="scene-item" id="help">
             <h2>Help</h2>

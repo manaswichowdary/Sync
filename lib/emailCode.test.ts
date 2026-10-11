@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { destinationAfterLogin, emailCodeError, verifyEmailCode } from "./emailCode";
+import { EMAIL_CODE_NOTE, destinationAfterLogin, emailCodeError, noteAfterCode, verifyEmailCode } from "./emailCode";
+
+test("the note after a sent email keeps the code first", () => {
+  assert.equal(EMAIL_CODE_NOTE, "Type the code from the email. You can also open the link.");
+  assert.equal(noteAfterCode(`${EMAIL_CODE_NOTE} Nothing is posted until you approve it.`), "Nothing is posted until you approve it.");
+  assert.equal(noteAfterCode(EMAIL_CODE_NOTE), "");
+});
 
 test("a wrong or expired email code has a clear message", () => {
   assert.equal(

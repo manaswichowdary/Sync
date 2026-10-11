@@ -1,4 +1,11 @@
-export const EMAIL_CODE_NOTE = "Open the link, or type the code from the email.";
+export const EMAIL_CODE_LABEL = "Type the code from the email";
+export const EMAIL_LINK_NOTE = "You can also open the link.";
+export const EMAIL_CODE_NOTE = `${EMAIL_CODE_LABEL}. ${EMAIL_LINK_NOTE}`;
+
+export function noteAfterCode(message: string): string {
+  if (!message.startsWith(EMAIL_CODE_NOTE)) return "";
+  return message.slice(EMAIL_CODE_NOTE.length).trim();
+}
 
 export type EmailCodeClient = {
   auth: {

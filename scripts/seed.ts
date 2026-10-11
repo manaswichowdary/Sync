@@ -348,25 +348,6 @@ async function main() {
     if (inserted.error) fail(publicError(inserted.error));
   }
 
-  const gatherings: { key: string; emails: string[] }[] = [
-    { key: "playdate", emails: ["dana.ellis@example.com", "sam.ortiz@example.com", "priya.nair@example.com"] },
-    { key: "potluck", emails: ["dana.ellis@example.com", "priya.nair@example.com", "marcus.bell@example.com", ...(meEmail ? [meEmail] : [])] },
-    { key: "walk", emails: ["sam.ortiz@example.com", "priya.nair@example.com", "marcus.bell@example.com"] },
-  ];
-  for (const gathering of gatherings) {
-    const postId = postIds.get(gathering.key);
-    if (!postId) continue;
-    for (const email of gathering.emails) {
-      const user = email === meEmail ? meId : ids.get(email);
-      if (!user) continue;
-      const existing = await from("gather_rsvps").select("user_id").eq("post_id", postId).eq("user_id", user).maybeSingle();
-      if (existing.error) fail(publicError(existing.error));
-      if (existing.data) continue;
-      const inserted = await from("gather_rsvps").insert({ post_id: postId, user_id: user });
-      if (inserted.error) fail(publicError(inserted.error));
-    }
-  }
-
   for (const offer of FREE_TIMES) {
     const user = ids.get(offer.email);
     const existing = await from("standing_offers")

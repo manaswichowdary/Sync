@@ -6,11 +6,8 @@ import { SyncMark } from "@/components/SyncMark";
 
 const links = [
   ["about", "About us"],
-  ["help", "Help"],
-  ["crunch", "Calendar"],
-  ["gather", "Gather"],
-  ["forum", "Discussion Forum"],
-  ["rewards", "Rewards"],
+  ["features", "Features"],
+  ["decide", "AI"],
 ] as const;
 
 export function HomeNav() {

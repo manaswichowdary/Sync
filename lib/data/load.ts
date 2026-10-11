@@ -58,6 +58,7 @@ export async function loadGroupPage(groupId: string): Promise<
     : [];
   const exchanges = postIds.length ? (await from(db, "exchanges").select("*").in("post_id", postIds)).data ?? [] : [];
   const rsvps = postIds.length ? (await from(db, "gather_rsvps").select("*").in("post_id", postIds)).data ?? [] : [];
+  const choices = (await from(db, "code_attempts").select("subject, tries").like("subject", `gather-choice:%:${user.id}`)).data ?? [];
   const prefs = postIds.length
     ? (await from(db, "thread_prefs").select("*").eq("user_id", user.id).in("post_id", postIds)).data ?? []
     : [];
@@ -172,7 +173,13 @@ export async function loadGroupPage(groupId: string): Promise<
         held: reply.held,
       })),
       rsvpNames: postRsvps.map((row: { user_id: string }) => names.get(row.user_id) ?? "Neighbor"),
-      viewerIn: postRsvps.some((row: { user_id: string }) => row.user_id === user.id),
+      viewerChoice: (() => {
+        const mark = choices.find((row: { subject: string; tries: number }) => row.subject === `gather-choice:${post.id}:${user.id}`);
+        if (mark?.tries === 1) return "in" as const;
+        if (mark?.tries === 2) return "out" as const;
+        return null;
+      })(),
+      viewerIn: choices.some((row: { subject: string; tries: number }) => row.subject === `gather-choice:${post.id}:${user.id}` && row.tries === 1),
       safetyNotice: userInExchange && (muted || left || !categoryEnabled),
       exchanges: postExchanges.map((row: any) => {
         const handoff = handoffs.find((item: { exchange_id: string }) => item.exchange_id === row.id);

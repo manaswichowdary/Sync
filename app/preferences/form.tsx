@@ -28,7 +28,7 @@ export function PreferenceForm({
   return (
     <div>
       <h1>Preferences</h1>
-      <p className="lead">Only you can see this: help given {helpGiven}, help received {helpReceived}.</p>
+      <p className="lead stat-line">Only you can see this: help given {helpGiven}, help received {helpReceived}.</p>
       <form className="card" onSubmit={async (event) => {
         event.preventDefault();
         const result = await savePrefsAction({ help, gather, updates });
@@ -49,7 +49,7 @@ export function PreferenceForm({
       <div className="grid" style={{ marginTop: 16 }}>
         {threads.map((thread) => (
           <article key={thread.postId} className="card">
-            <p>{thread.text}</p>
+            <p className="post-line">{thread.text}</p>
             <p className="meta">{thread.muted ? "Muted" : ""} {thread.left ? "Left" : ""}</p>
             <div className="row">
               {thread.muted && (
