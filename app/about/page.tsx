@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { principles } from "@/data/principles";
 
 export default function AboutPage() {
   return (
-    <div className="wrap page-pad">
+    <div className="center-copy">
       <h1>Information</h1>
       <p className="lead">Seven ways Sync tries to be human.</p>
       <div className="stack">
@@ -22,10 +21,6 @@ export default function AboutPage() {
             <li>Calendar only suggests and never sends anything until the parent taps Send.</li>
           </ul>
         </article>
-      </div>
-      <div className="row">
-        <Link href="/" className="text-btn">Back to home</Link>
-        <Link href="/login" className="btn brand">Log in / Sign up</Link>
       </div>
     </div>
   );

@@ -2,7 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Nunito } from "next/font/google";
 import { AppFrame } from "@/components/AppFrame";
 import { PrivacyPrompt } from "@/components/PrivacyPrompt";
+import { isAdminEmail } from "@/lib/admin";
 import { currentUser } from "@/lib/data/db";
+import { loadHome } from "@/lib/data/load";
 import "./globals.css";
 
 const nunito = Nunito({
@@ -20,10 +22,13 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const user = await currentUser();
+  const home = user ? await loadHome() : null;
   return (
     <html lang="en">
       <body className={nunito.className}>
-        <AppFrame signedIn={Boolean(user)}>{children}</AppFrame>
+        <AppFrame signedIn={Boolean(user)} groupId={home?.groupId ?? null} admin={isAdminEmail(user?.email)}>
+          {children}
+        </AppFrame>
         <PrivacyPrompt signedIn={Boolean(user)} />
         <footer className="site-footer">
           <div className="wrap">

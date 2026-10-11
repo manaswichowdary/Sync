@@ -12,10 +12,12 @@ export default async function AdminPage() {
   if (!isAdminEmail(user.email)) notFound();
   const reports = await loadAdmin(user.email);
   return (
-    <>
-      <h1>Held items</h1>
-      <p className="lead">A report puts the item on hold. Restore puts it back. Remove keeps it hidden.</p>
-      <AdminList reports={reports.map(({ id, targetType, reason, label }) => ({ id, targetType, reason, label }))} />
-    </>
+    <div className="group-page">
+      <div className="group-shell">
+        <h1>Held items</h1>
+        <p className="lead">A report puts the item on hold. Restore puts it back. Remove keeps it hidden.</p>
+        <AdminList reports={reports.map(({ id, targetType, reason, label }) => ({ id, targetType, reason, label }))} />
+      </div>
+    </div>
   );
 }

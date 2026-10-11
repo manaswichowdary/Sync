@@ -82,7 +82,8 @@ export default function PostPage() {
   }
 
   return (
-    <>
+    <div className="group-page">
+    <div className="group-shell">
       <h1>Post a need or offer</h1>
       <p className="lead">
         Write it your way. Before anything goes up, we check for details that could put a child at
@@ -219,6 +220,7 @@ export default function PostPage() {
           </div>
         </div>
       )}
-    </>
+    </div>
+    </div>
   );
 }
