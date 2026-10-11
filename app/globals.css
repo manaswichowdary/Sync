@@ -46,7 +46,7 @@ body {
   font-family: inherit;
   line-height: 1.5;
   font-size: var(--body);
-  font-weight: 400;
+  font-weight: 700;
 }
 
 a { color: var(--brand); }
@@ -57,6 +57,11 @@ a { color: var(--brand); }
 }
 
 .wrap { max-width: 1040px; margin: 0 auto; padding: 0 var(--page-pad); }
+.info-sheet {
+  width: min(720px, 100%);
+  margin: 0 auto;
+  padding: 24px 24px 32px;
+}
 .page-pad { padding-top: 8px; }
 .spacer { flex: 1; }
 
@@ -264,7 +269,7 @@ h1 { font-size: var(--title); font-weight: 800; line-height: 1.1; margin: 0 0 va
 h2 { font-size: var(--section); font-weight: 800; margin: 0 0 var(--space-1); }
 h3 { font-size: var(--card-title); font-weight: 700; margin: 0 0 var(--space-1); }
 .card h2, .side-card h2, .group-page .invite-box h2 { font-size: var(--card-title); font-weight: 700; }
-p.lead { color: var(--muted); margin: 0 0 var(--space-3); max-width: 62ch; font-size: var(--body); }
+p.lead { color: #000; font-style: italic; font-weight: 800; margin: 0 0 var(--space-3); max-width: 62ch; font-size: var(--body); }
 
 .group-page { padding-bottom: var(--space-2); font-size: var(--body); }
 .tab-head {
@@ -308,7 +313,7 @@ p.lead { color: var(--muted); margin: 0 0 var(--space-3); max-width: 62ch; font-
 .action-card.active { background: var(--wash); }
 .mark { font-size: 1.5rem; line-height: 1; color: var(--brand); }
 .action-title { font-weight: 800; font-size: 1.2rem; }
-.action-text { color: var(--muted); }
+.action-text { color: #000; font-style: italic; font-weight: 800; }
 
 .menu { position: relative; }
 .menu summary {
@@ -415,8 +420,21 @@ body:has(.login-wrap) .form-card h2 { font-size: var(--card-title); margin: 0 0 
   box-shadow: 3px 3px 0 var(--ink);
 }
 .tab-switch button.on { background: var(--brand); color: var(--brand-ink); border-color: var(--line); box-shadow: 3px 3px 0 #fff; }
-.hint { margin: var(--space-1) 0 0; color: var(--muted); font-size: var(--small); font-weight: 400; line-height: 1.4; }
+.hint { margin: var(--space-1) 0 0; color: #000; font-style: italic; font-size: var(--body); font-weight: 800; line-height: 1.4; }
+.note-line { color: #000; font-style: italic; font-weight: 800; font-size: var(--body); }
 .ai-label { margin: 12px 0 0; font-weight: 800; }
+.undo-link {
+  margin-left: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #000;
+  font: inherit;
+  font-weight: 800;
+  font-style: italic;
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 .grid { display: grid; gap: var(--card-gap); }
 .card {
@@ -426,7 +444,7 @@ body:has(.login-wrap) .form-card h2 { font-size: var(--card-title); margin: 0 0 
   box-shadow: var(--shadow);
   padding: var(--card-pad);
 }
-.card .meta, .meta { color: var(--muted); font-size: var(--small); margin-top: var(--space-1); }
+.card .meta, .meta { color: #000; font-style: italic; font-weight: 800; font-size: var(--body); margin-top: var(--space-1); }
 .card p { margin: 8px 0; }
 
 .pill {
@@ -451,7 +469,24 @@ body:has(.login-wrap) .form-card h2 { font-size: var(--card-title); margin: 0 0 
   background: var(--wash);
   color: var(--ink);
   border: 2px solid var(--ink);
-  margin: 4px 6px 4px 0;
+  margin: 0;
+}
+.card p .badge { margin-right: 8px; }
+.neighbor-row { margin: 0 0 12px; }
+.neighbor-row p { margin: 0; font-weight: 700; }
+.badge-drop { margin-top: 6px; }
+.badge-drop summary {
+  width: fit-content;
+  cursor: pointer;
+  font-weight: 700;
+  font-style: italic;
+}
+.badge-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 8px;
 }
 
 .btn {
@@ -501,7 +536,7 @@ textarea {
   border: 2px solid var(--ink);
   font: inherit;
   font-size: var(--body);
-  font-weight: 400;
+  font-weight: 700;
   background: #fff;
   color: var(--ink);
 }
@@ -530,13 +565,16 @@ textarea:focus {
 }
 .notice.ok { background: #E5F0E1; }
 
-.finding { padding: 10px 0; border-top: 2px solid var(--ink); }
+.finding { padding: 16px 0 8px; margin-top: 16px; border-top: 2px solid var(--ink); }
+.card .row { margin-bottom: 8px; }
 .finding:first-child { border-top: 0; }
 .finding strong { color: var(--warn); }
-.reasons { margin: 6px 0 0; padding-left: 20px; color: var(--muted); }
+.reasons { margin: 6px 0 0; padding-left: 20px; color: #000; font-style: italic; font-weight: 800; }
 
 .site-footer {
-  color: var(--muted);
+  color: #000;
+  font-style: italic;
+  font-weight: 700;
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -1036,7 +1074,7 @@ body:has(.group-page) .group-page { flex: 1 0 auto; }
 }
 .home .scene-body { padding: 10px 14px 14px; }
 .home .scene-body p { margin: 0 0 6px; font-size: 0.95rem; }
-.home .scene-body .hint { margin: 0; font-size: 0.9rem; font-style: italic; }
+.home .scene-body .hint { margin: 0; font-size: var(--body); font-style: italic; font-weight: 800; color: #000; }
 
 @media (max-width: 800px) {
   .home .feature-band .scene-grid {

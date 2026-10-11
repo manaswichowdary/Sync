@@ -26,6 +26,7 @@ export type ReplyView = {
   text: string;
   authorId: string;
   authorName: string;
+  createdAt: string;
   held: boolean;
 };
 

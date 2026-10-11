@@ -8,7 +8,12 @@ export function AppFrame({ signedIn, children }: { signedIn: boolean; children: 
   const ownHeader = path === "/" || path.startsWith("/g/");
   return (
     <>
-      {!ownHeader && <PublicHeader signedIn={signedIn} showInfo={path !== "/login" && path !== "/start"} />}
+      {!ownHeader && (
+        <PublicHeader
+          signedIn={signedIn}
+          showInfo={path !== "/login" && path !== "/start" && path !== "/preferences" && path !== "/safety"}
+        />
+      )}
       {children}
     </>
   );

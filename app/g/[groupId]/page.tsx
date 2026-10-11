@@ -25,6 +25,38 @@ function dayName(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
+function NeighborRow({
+  firstName,
+  creator,
+  badges,
+}: {
+  firstName: string;
+  creator: boolean;
+  badges: string[];
+}) {
+  const invite = badges.find((badge) => badge.startsWith("Invited by "));
+  const rest = badges.filter((badge) => badge !== invite);
+  const summary = creator ? "Started this group" : invite;
+  const inside = creator && invite ? [invite, ...rest] : rest;
+  return (
+    <div className="neighbor-row">
+      <p>{firstName}</p>
+      {summary && (
+        <details className="badge-drop">
+          <summary>{summary}</summary>
+          {inside.length > 0 && (
+            <div className="badge-menu">
+              {inside.map((badge) => (
+                <span key={badge} className="badge">{badge}</span>
+              ))}
+            </div>
+          )}
+        </details>
+      )}
+    </div>
+  );
+}
+
 function GettingStarted({ groupId, data }: { groupId: string; data: GroupPageData }) {
   const invited = data.codes.length > 0 || data.group.memberCount > 1;
   const posted = data.posts.some((post) => post.kind === "need");
@@ -90,7 +122,7 @@ export default async function GroupPage({
               </p>
             </div>
           </div>
-          <InviteCard groupId={groupId} codes={data.codes} />
+          <InviteCard codes={data.codes} />
         </div>
 
         {data.otherGroups.length > 0 && (
@@ -137,13 +169,12 @@ export default async function GroupPage({
               <section className="card">
                 <h2>Neighbors</h2>
                 {data.members.map((member) => (
-                  <p key={member.userId}>
-                    {member.firstName}
-                    {member.role === "creator" ? " · Started this group" : ""}
-                    {member.badges.map((badge) => (
-                      <span key={badge} className="badge">{badge}</span>
-                    ))}
-                  </p>
+                  <NeighborRow
+                    key={member.userId}
+                    firstName={member.firstName}
+                    creator={member.role === "creator"}
+                    badges={member.badges}
+                  />
                 ))}
               </section>
             )}
@@ -153,12 +184,12 @@ export default async function GroupPage({
             <section className="card side-card">
               <h2>Neighbors</h2>
               {data.members.slice(0, 5).map((member) => (
-                <p key={member.userId}>
-                  {member.firstName}
-                  {member.badges.map((badge) => (
-                    <span key={badge} className="badge">{badge}</span>
-                  ))}
-                </p>
+                <NeighborRow
+                  key={member.userId}
+                  firstName={member.firstName}
+                  creator={member.role === "creator"}
+                  badges={member.badges}
+                />
               ))}
               <Link href={`/g/${groupId}?tab=people`}>See all</Link>
             </section>

@@ -164,11 +164,12 @@ export async function loadGroupPage(groupId: string): Promise<
       expiresAt: post.expires_at,
       held: post.held,
       pendingChild: post.author_id === user.id ? childLine(priv?.child_details) : null,
-      replies: postReplies.map((reply: { id: string; text: string; author_id: string; held: boolean }) => ({
+      replies: postReplies.map((reply: { id: string; text: string; author_id: string; held: boolean; created_at: string }) => ({
         id: reply.id,
         text: reply.text,
         authorId: reply.author_id,
         authorName: names.get(reply.author_id) ?? "Neighbor",
+        createdAt: reply.created_at,
         held: reply.held,
       })),
       rsvpNames: postRsvps.map((row: { user_id: string }) => names.get(row.user_id) ?? "Neighbor"),
