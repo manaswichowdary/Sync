@@ -127,3 +127,8 @@ export function forecastConflicts(input: {
 
   return suggestions;
 }
+
+/** Used when this group has no free times, so a sample name is never shown. */
+export function emptyGroupConflictSummary(summary: string): string {
+  return `${summary} A neighbor can offer to help once they add free times.`;
+}

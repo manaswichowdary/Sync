@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import calendar from "../data/calendar.json";
-import { forecastConflicts } from "./forecast";
+import { emptyGroupConflictSummary, forecastConflicts } from "./forecast";
 
 const sample = {
   busy: calendar.busy,
@@ -28,6 +28,20 @@ test("a pickup outside the busy block is not a conflict", () => {
     now: new Date(2026, 9, 10),
   });
   assert.equal(suggestions.length, 0);
+});
+
+test("a group with no free times does not name a sample neighbor", () => {
+  const suggestions = forecastConflicts({
+    busy: sample.busy,
+    pickups: sample.pickups,
+    offers: [],
+    now: new Date(2026, 9, 10),
+  });
+  assert.equal(suggestions[0].helperName, null);
+  assert.equal(
+    emptyGroupConflictSummary(suggestions[0].summary),
+    "Thursday 3:30 conflict. A neighbor can offer to help once they add free times."
+  );
 });
 
 test("a conflict with no covering offer names no neighbor", () => {
