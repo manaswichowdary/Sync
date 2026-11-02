@@ -9,7 +9,11 @@
 
 Built for **Hacks for Humanity 2026** (ASU Project Humanities), Parenting track.
 
-![Sync home page](docs/screenshots/home.jpg)
+## Demo
+
+[![Sync demo: a parent writes a playdate request, the privacy guard flags the child's name, school and home landmark, and the parent approves a safer version](docs/demo/sync-demo.gif)](docs/demo/sync-demo.mp4)
+
+*37 second walkthrough. [Watch it in full HD](docs/demo/sync-demo.mp4).*
 
 ## The Problem
 
@@ -19,9 +23,7 @@ Sync keeps help local and private: you join a small group through someone you kn
 
 ## The Privacy Guard in Action
 
-![Privacy guard flags a child's name, school and home landmark](docs/screenshots/guard.jpg)
-
-The guard flagged the child's name, the school and the landmark near home, explained the risk of each one, and rewrote the post as *"Looking for a playdate for my 6 year old, Saturday morning, we live nearby and he goes to school."* The parent chooses the safer version or edits their own.
+In the demo, the guard flagged the child's name, the school and the landmark near home, explained the risk of each one, and rewrote the post as *"Looking for a playdate for my 6 year old, Saturday morning, we live nearby and he goes to school."* The parent chooses the safer version or edits their own.
 
 ## Features
 
